@@ -1,13 +1,12 @@
-from db_manager import DB
 
 import requests
 import json
 
 class Api:
-    def __inif__(self, api_key):
+    def __init__(self, api_key):
         # self.api_key = api_key
         self.api_key = "97f136f5a8004dc382ca"
-        self.serviceID = "C003"
+        self.serviceId = "C003"
         self.dataType = "json"
         self.startIdx = "1"
         self.endIdx = "999"
@@ -19,7 +18,7 @@ class Api:
         self.api_url = f"http://openapi.foodsafetykorea.go.kr/api/{self.api_key}/{self.serviceId}/{self.dataType}/{self.startIdx}/{self.endIdx}"
 
     def getData(self):
-        return requests.get(self.api_url)
+        return requests.get(self.api_url).json()
 
     def toStringJson(self, data):
         return json.dumps(data, indent=4, ensure_ascii=False)
@@ -28,8 +27,8 @@ class Api:
         return json.loads(stringJson)
 
     def getJsonObject(self):
-        sJson = self.toJsonObject(self.getData())
-        return self.toJsonObject(sJson)[self.serviceID]['row']
+        sJson = self.toStringJson(self.getData())
+        return self.toJsonObject(sJson)[self.serviceId]['row']
 
     """
     1 999
@@ -53,12 +52,13 @@ class Api:
                 self.endIdx = str(end_)
                 self.setUrl()
 
-                # self.excute_C003(db)
+                self.excute_C003(db)
+                print(f"{start_} ~ {end_} 완료")
 
                 start_ = end_ + 1
                 end_ = start_ + l
 
-                print(f"{start_} ~ {end_}")
+                
 
 
         elif service_id == "I0030":
@@ -67,23 +67,23 @@ class Api:
     def excute_C003(self, db):
         rows = self.getJsonObject()
         for row in rows:
-            LCNS_NO	= row['LCNS_NO']
-            BSSH_NM	= row['BSSH_NM']
-            PRDLST_REPORT_NO = row['PRDLST_REPORT_NO']
-            PRDLST_NM = row['PRDLST_NM']
-            PRMS_DT = row['PRMS_DT']
-            POG_DAYCNT = row['POG_DAYCNT']
-            DISPOS = row['DISPOS']
-            NTK_MTHD = row['NTK_MTHD']
-            PRIMARY_FNCLTY = row['PRIMARY_FNCLTY']
-            IFTKN_ATNT_MATR_CN = row['IFTKN_ATNT_MATR_CN']
-            CSTDY_MTHD = row['CSTDY_MTHD']
-            SHAP = row['SHAP']
-            STDR_STND = row['STDR_STND']
-            RAWMTRL_NM = row['RAWMTRL_NM']
-            CRET_DTM = row['CRET_DTM']
-            LAST_UPDT_DTM = row['LAST_UPDT_DTM']
-            PRDT_SHAP_CD_NM = row['PRDT_SHAP_CD_NM']
+            LCNS_NO	= row['LCNS_NO'].replace("'", "''")
+            BSSH_NM	= row['BSSH_NM'].replace("'", "''")
+            PRDLST_REPORT_NO = row['PRDLST_REPORT_NO'].replace("'", "''")
+            PRDLST_NM = row['PRDLST_NM'].replace("'", "''")
+            PRMS_DT = row['PRMS_DT'].replace("'", "''")
+            POG_DAYCNT = row['POG_DAYCNT'].replace("'", "''")
+            DISPOS = row['DISPOS'].replace("'", "''")
+            NTK_MTHD = row['NTK_MTHD'].replace("'", "''")
+            PRIMARY_FNCLTY = row['PRIMARY_FNCLTY'].replace("'", "''")
+            IFTKN_ATNT_MATR_CN = row['IFTKN_ATNT_MATR_CN'].replace("'", "''")
+            CSTDY_MTHD = row['CSTDY_MTHD'].replace("'", "''")
+            SHAP = row['SHAP'].replace("'", "''")
+            STDR_STND = row['STDR_STND'].replace("'", "''")
+            RAWMTRL_NM = row['RAWMTRL_NM'].replace("'", "''")
+            CRET_DTM = row['CRET_DTM'].replace("'", "''")
+            LAST_UPDT_DTM = row['LAST_UPDT_DTM'].replace("'", "''")
+            PRDT_SHAP_CD_NM = row['PRDT_SHAP_CD_NM'].replace("'", "''")
 
             sql = f"INSERT INTO sorr (\
                         LCNS_NO,\
@@ -134,3 +134,6 @@ class Api:
 
     def excute_I0030(self):
         pass
+
+    def fixString(self, str):
+        str.replace()
