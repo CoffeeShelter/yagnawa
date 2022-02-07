@@ -2,6 +2,8 @@
 import requests
 import json
 
+import time
+
 class Api:
     def __init__(self, api_key):
         # self.api_key = api_key
@@ -59,8 +61,12 @@ class Api:
                 self.endIdx = str(end_)
                 self.setUrl()
 
+                start_time = time.time()
                 self.excute_I0030(db)
-                print(f"{start_} ~ {end_} 완료")
+                end_time = time.time()
+                result_time = end_time - start_time
+
+                print(f"{start_} ~ {end_} 완료 [걸린시간:  {result_time}]")
 
                 start_ = end_ + 1
                 end_ = start_ + l
