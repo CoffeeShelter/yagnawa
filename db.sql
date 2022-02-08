@@ -56,4 +56,7 @@ SHOW TABLES;
 
 alter table sor modify PRDLST_NM varchar(200);
 
-select * from sor;
+select count(*) from sor;
+select count(*) from sorr;
+
+desc sor;
