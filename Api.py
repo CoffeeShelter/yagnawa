@@ -1,9 +1,13 @@
 
+from msilib.schema import CreateFolder
+from sqlite3 import dbapi2
 from tkinter import E
 import requests
 import json
 
 import time
+
+import os
 
 class Api:
     def __init__(self, api_key):
@@ -16,6 +20,11 @@ class Api:
         self.api_url = ""
 
         self.index = 1
+
+        self.running = False
+
+        self.I0030 = None
+        self.C003 = None
 
         self.setUrl()
 
@@ -37,8 +46,15 @@ class Api:
         jsonObj = self.toJsonObject(sJson)
 
         try:
-            row = jsonObj[self.serviceId]['row']
-            return row
+            result = jsonObj[self.serviceId]['RESULT']
+
+            if result['CODE'] == "INFO-000":
+                return jsonObj[self.serviceId]['row']
+                
+            else:
+                self.running = False
+                print(result['MSG'])
+                return None
 
         except Exception as e:
             f = open(f"errorFiles/{self.startIdx}_{self.endIdx}_json_{self.index}.json", "w")
@@ -57,6 +73,7 @@ class Api:
             return None
 
     def excute(self, db, service_id, start=1, end=999, count=1):
+        self.running = True
         self.serviceId = service_id
         self.setUrl()
 
@@ -65,15 +82,20 @@ class Api:
         l = end_ - start_ + 1
 
         if service_id == "C003":
+            if self.C003 is None:
+                self.C003 = C003(self.api_key)
+
             for i in range(count):
                 self.startIdx = str(start_)
                 self.endIdx = str(end_)
                 self.setUrl()
                 
-                start_time = time.time()
-                self.excute_I0030(db)
+                self.C003.setUrl(startIdx=self.startIdx, endIdx=self.endIdx)
 
-                self.excute_C003(db)
+                print(f"[C003] {start_} ~ {end_} 시작")
+
+                start_time = time.time()
+                result = self.C003.execute(db=db)
                 
                 end_time = time.time()
                 result_time = end_time - start_time
@@ -82,18 +104,25 @@ class Api:
 
                 start_ = end_ + 1
                 end_ = start_ + l
+
+                if result == False:
+                    print("[데이터 수집 종료]")
+                    break
 
         elif service_id == "I0030":
-            self.serviceId = service_id
-            self.setUrl()
+            if self.I0030 is None:
+                self.I0030 = I0030(self.api_key)
 
             for i in range(count):
                 self.startIdx = str(start_)
                 self.endIdx = str(end_)
-                self.setUrl()
+                
+                self.I0030.setUrl(startIdx=self.startIdx, endIdx=self.endIdx)
+                
+                print(f"[I0030] {start_} ~ {end_} 시작")
 
                 start_time = time.time()
-                self.excute_I0030(db)
+                result = self.I0030.execute(db=db)
 
                 end_time = time.time()
                 result_time = end_time - start_time
@@ -102,11 +131,15 @@ class Api:
 
                 start_ = end_ + 1
                 end_ = start_ + l
+
+                if result == False:
+                    print("[데이터 수집 종료]")
+                    break
 
         else:
             raise Exception("잘못된 api 서비스 아이디 입니다.")
 
-
+"""
     def excute_C003(self, db):
         rows = self.getJsonObject()
         if rows is None:
@@ -189,13 +222,108 @@ class Api:
                 log.close()
 
                 print(msg)
+"""
+class ApiManager():
+    def __init__(self):
+        self.BASEURL_ = "http://openapi.foodsafetykorea.go.kr/api/"
+        self.api_url = self.BASEURL_
 
+    # api 요청 주소 세팅
+    def setUrl(self):
+        pass
+    
+    # api 결과 받아오기
+    def getData(self):
+       return requests.get(self.api_url).json()
 
-    def excute_I0030(self, db):
+    # api 결과 문자열 타입의 json으로 변환
+    def toStringJson(self, data):
+        return json.dumps(data, indent=4, ensure_ascii=False)
+    
+    # 문자열 타입의 json을 딕셔너리로 변환
+    def toJsonObject(self, stringJson):
+        return json.loads(stringJson)
+
+    # api 결과 코드
+    def getResultCode(self, jsonObj, serviceId):
+        return jsonObj[serviceId]['RESULT']['CODE']
+    
+    # api 결과 메세지
+    def getResultMsg(self, jsonObj, serviceId):
+        return jsonObj[serviceId]['RESULT']['MSG']
+
+    # api 결과 row(값) 들 반환
+    def getResultRow(self, jsonObj, serviceId):
+        return jsonObj[serviceId]['row']
+
+    # api 결과 row(값) 개수
+    def getResultTotalCount(self, jsonObj, serviceId):
+        return jsonObj[serviceId]['total_count']
+
+    def createFolder(self, path):
+        try:
+            if not os.path.exists(path):
+                os.makedirs(path)
+        except Exception as e:
+            print (f"[{e.__class__.__name__}] : {e}")
+
+class I0030(ApiManager):
+    def __init__(self, api_key):
+        super().__init__()
+        self.ERRORFOLDER_ = os.getcwd()+f"\\sor"
+        self.SERVICEID_ = "I0030"
+
+        self.startIdx = 0
+        self.endIdx = 0
+
+        self.__api_key = api_key
+        self.index = 1
+
+        self.running = True
+
+        self.createFolder(self.ERRORFOLDER_)
+
+    def setUrl(self, dataType="json", startIdx=0, endIdx=0):
+        self.startIdx = startIdx
+        self.endIdx = endIdx
+        self.api_url = self.BASEURL_ + f"{self.__api_key}/{self.SERVICEID_}/{dataType}/{startIdx}/{endIdx}"  
+
+    def getJsonObject(self):
+        sJson = self.toStringJson(self.getData())
+        jsonObj = self.toJsonObject(sJson)
+
+        try:
+            if self.getResultCode(jsonObj, self.SERVICEID_) == "INFO-000":
+                return self.getResultRow(jsonObj, self.SERVICEID_)
+                
+            else:
+                self.running = False
+                print(self.getResultMsg(jsonObj,self.SERVICEID_))
+                return None
+
+        except Exception as e:
+            f = open(f"{self.ERRORFOLDER_}/{self.startIdx}_{self.endIdx}_json_{self.index}.json", "w")
+            json.dump(jsonObj, f, indent=4, ensure_ascii=False)
+            f.close()
+
+            name = e.__class__.__name__
+            msg = f"{self.startIdx}~{self.endIdx}\n[{name}] : {e}\n\n"
+
+            log = open("sor_log.txt", "a")
+            log.write(msg)
+            log.close()
+
+            self.index += 1
+
+            return None
+
+    
+    def execute(self, db):
         rows = self.getJsonObject()
         if rows is None:
-            return
+            return False
 
+        count = 0
         for row in rows:
             try:
                 LCNS_NO	= row['LCNS_NO'].replace("'", "''")
@@ -209,13 +337,10 @@ class Api:
                 PRIMARY_FNCLTY = row['PRIMARY_FNCLTY'].replace("'", "''")
                 IFTKN_ATNT_MATR_CN = row['IFTKN_ATNT_MATR_CN'].replace("'", "''")
                 CSTDY_MTHD = row['CSTDY_MTHD'].replace("'", "''")
-                # SHAP = row['SHAP'].replace("'", "''")
                 STDR_STND = row['STDR_STND'].replace("'", "''")
                 RAWMTRL_NM = row['RAWMTRL_NM'].replace("'", "''")
-                # CRET_DTM = row['CRET_DTM'].replace("'", "''")
                 LAST_UPDT_DTM = row['LAST_UPDT_DTM'].replace("'", "''")
                 PRDT_SHAP_CD_NM = row['PRDT_SHAP_CD_NM'].replace("'", "''")
-
                 CHILD_CRTFC_YN = row['CHILD_CRTFC_YN'].replace("'", "''")
                 ETC_RAWMTRL_NM = row['ETC_RAWMTRL_NM'].replace("'", "''")
                 PRDLST_CDNM = row['PRDLST_CDNM'].replace("'", "''")
@@ -285,8 +410,11 @@ class Api:
                         )"
 
                 db.execute(sql, commit=True)
+                count += 1
+
             except Exception as e:
-                f = open(f"sor/{self.startIdx}_{self.endIdx}_{PRDLST_REPORT_NO}.json", "w")
+                index = int(self.startIdx) + count
+                f = open(f"{self.ERRORFOLDER_}/{str(index)}_{PRDLST_REPORT_NO}.json", "w")
                 json.dump(row, f, indent=4, ensure_ascii=False)
                 f.close()
 
@@ -298,3 +426,167 @@ class Api:
                 log.close()
 
                 print(msg)
+
+        return True
+
+class C003(ApiManager):
+    def __init__(self, api_key):
+        super().__init__()
+        self.ERRORFOLDER_ = os.getcwd()+f"\\sorr"
+        self.SERVICEID_ = "C003"
+
+        self.startIdx = 0
+        self.endIdx = 0
+
+        self.__api_key = api_key
+        self.index = 1
+
+        self.running = True
+
+        self.createFolder(self.ERRORFOLDER_)
+
+    def setUrl(self, dataType="json", startIdx=0, endIdx=0):
+        self.startIdx = startIdx
+        self.endIdx = endIdx
+        self.api_url = self.BASEURL_ + f"{self.__api_key}/{self.SERVICEID_}/{dataType}/{startIdx}/{endIdx}"  
+
+    def getJsonObject(self):
+        sJson = self.toStringJson(self.getData())
+        jsonObj = self.toJsonObject(sJson)
+
+        try:
+            if self.getResultCode(jsonObj, self.SERVICEID_) == "INFO-000":
+                return self.getResultRow(jsonObj, self.SERVICEID_)
+                
+            else:
+                self.running = False
+                print(self.getResultMsg(jsonObj,self.SERVICEID_))
+                return None
+
+        except Exception as e:
+            f = open(f"{self.ERRORFOLDER_}/{self.startIdx}_{self.endIdx}_json_{self.index}.json", "w")
+            json.dump(jsonObj, f, indent=4, ensure_ascii=False)
+            f.close()
+
+            name = e.__class__.__name__
+            msg = f"{self.startIdx}~{self.endIdx}\n[{name}] : {e}\n\n"
+
+            log = open("sorr_log.txt", "a")
+            log.write(msg)
+            log.close()
+
+            self.index += 1
+
+            return None
+
+    
+    def execute(self, db):
+        rows = self.getJsonObject()
+        if rows is None:
+            return False
+
+        count = 0
+        for row in rows:
+            try:
+                LCNS_NO	= row['LCNS_NO'].replace("'", "''")
+                BSSH_NM	= row['BSSH_NM'].replace("'", "''")
+                PRDLST_REPORT_NO = row['PRDLST_REPORT_NO'].replace("'", "''")
+                PRDLST_NM = row['PRDLST_NM'].replace("'", "''")
+                PRMS_DT = row['PRMS_DT'].replace("'", "''")
+                POG_DAYCNT = row['POG_DAYCNT'].replace("'", "''")
+                DISPOS = row['DISPOS'].replace("'", "''")
+                NTK_MTHD = row['NTK_MTHD'].replace("'", "''")
+                PRIMARY_FNCLTY = row['PRIMARY_FNCLTY'].replace("'", "''")
+                IFTKN_ATNT_MATR_CN = row['IFTKN_ATNT_MATR_CN'].replace("'", "''")
+                CSTDY_MTHD = row['CSTDY_MTHD'].replace("'", "''")
+                STDR_STND = row['STDR_STND'].replace("'", "''")
+                RAWMTRL_NM = row['RAWMTRL_NM'].replace("'", "''")
+                LAST_UPDT_DTM = row['LAST_UPDT_DTM'].replace("'", "''")
+                PRDT_SHAP_CD_NM = row['PRDT_SHAP_CD_NM'].replace("'", "''")
+                CHILD_CRTFC_YN = row['CHILD_CRTFC_YN'].replace("'", "''")
+                ETC_RAWMTRL_NM = row['ETC_RAWMTRL_NM'].replace("'", "''")
+                PRDLST_CDNM = row['PRDLST_CDNM'].replace("'", "''")
+                INDUTY_CD_NM = row['INDUTY_CD_NM'].replace("'", "''")
+                FRMLC_MTRQLT = row['FRMLC_MTRQLT'].replace("'", "''")
+                INDIV_RAWMTRL_NM = row['INDIV_RAWMTRL_NM'].replace("'", "''")
+                HIENG_LNTRT_DVS_NM = row['HIENG_LNTRT_DVS_NM'].replace("'", "''")
+                PRODUCTION = row['PRODUCTION'].replace("'", "''")
+                CAP_RAWMTRL_NM = row['CAP_RAWMTRL_NM'].replace("'", "''")
+
+
+                sql = f"INSERT INTO sor (\
+                            LCNS_NO,\
+                            BSSH_NM,\
+                            PRDLST_REPORT_NO,\
+                            PRDLST_NM,\
+                            PRMS_DT,\
+                            POG_DAYCNT,\
+                            DISPOS,\
+                            NTK_MTHD,\
+                            PRIMARY_FNCLTY,\
+                            IFTKN_ATNT_MATR_CN,\
+                            CSTDY_MTHD,\
+                            STDR_STND,\
+                            RAWMTRL_NM,\
+                            LAST_UPDT_DTM,\
+                            PRDT_SHAP_CD_NM,\
+                            CHILD_CRTFC_YN,\
+                            ETC_RAWMTRL_NM,\
+                            PRDLST_CDNM,\
+                            INDUTY_CD_NM,\
+                            FRMLC_MTRQLT,\
+                            INDIV_RAWMTRL_NM,\
+                            HIENG_LNTRT_DVS_NM,\
+                            PRODUCTION,\
+                            CAP_RAWMTRL_NM\
+                        ) SELECT\
+                            '{LCNS_NO}',\
+                            '{BSSH_NM}',\
+                            '{PRDLST_REPORT_NO}',\
+                            '{PRDLST_NM}',\
+                            '{PRMS_DT}',\
+                            '{POG_DAYCNT}',\
+                            '{DISPOS}',\
+                            '{NTK_MTHD}',\
+                            '{PRIMARY_FNCLTY}',\
+                            '{IFTKN_ATNT_MATR_CN}',\
+                            '{CSTDY_MTHD}',\
+                            '{STDR_STND}',\
+                            '{RAWMTRL_NM}',\
+                            '{LAST_UPDT_DTM}',\
+                            '{PRDT_SHAP_CD_NM}',\
+                            '{CHILD_CRTFC_YN}',\
+                            '{ETC_RAWMTRL_NM}',\
+                            '{PRDLST_CDNM}',\
+                            '{INDUTY_CD_NM}',\
+                            '{FRMLC_MTRQLT}',\
+                            '{INDIV_RAWMTRL_NM}',\
+                            '{HIENG_LNTRT_DVS_NM}',\
+                            '{PRODUCTION}',\
+                            '{CAP_RAWMTRL_NM}'\
+                        FROM DUAL\
+                        WHERE NOT EXISTS (\
+                            SELECT *\
+                            FROM sor\
+                            WHERE PRDLST_REPORT_NO = '{PRDLST_REPORT_NO}'\
+                        )"
+
+                db.execute(sql, commit=True)
+                count += 1
+
+            except Exception as e:
+                index = int(self.startIdx) + count
+                f = open(f"{self.ERRORFOLDER_}/{str(index)}_{PRDLST_REPORT_NO}.json", "w")
+                json.dump(row, f, indent=4, ensure_ascii=False)
+                f.close()
+
+                name = e.__class__.__name__
+                msg = f"[{name}] : {e}\n"
+
+                log = open("sor_log.txt", "a")
+                log.write(msg)
+                log.close()
+
+                print(msg)
+
+        return True

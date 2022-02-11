@@ -1,5 +1,5 @@
 CREATE DATABASE IF NOT EXISTS NUTRIENT;
-
+1234
 USE NUTRIENT;
 
 DROP TABLE IF EXISTS SOR;
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS SOR (
 	HIENG_LNTRT_DVS_NM VARCHAR(200),
 	RAWMTRL_NM TEXT,
 	PRODUCTION VARCHAR(200),
-	CAP_RAWMTRL_NM VARCHAR(500)
+	CAP_RAWMTRL_NM TEXT
 ) CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS SORR (
@@ -54,9 +54,11 @@ CREATE TABLE IF NOT EXISTS SORR (
 
 SHOW TABLES;
 
-alter table sor modify PRDLST_NM varchar(200);
+alter table sor modify CAP_RAWMTRL_NM TEXT;
 
 select count(*) from sor;
+select * from sor;
+select * from sor where PRDLST_NM like "%밀크씨슬 헬퍼%";
 select count(*) from sorr;
 
 desc sor;
