@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS SORR (
 ) CHARSET=utf8 COLLATE=utf8_general_ci;
 
 SHOW TABLES;
+desc sor;
 
 alter table sor modify CAP_RAWMTRL_NM TEXT;
 
@@ -62,6 +63,6 @@ select count(*) from sor;
 select * from sor;
 select * from sor where PRDLST_NM like "%밀크씨슬 헬퍼%";
 select count(*) from sorr;
-select * from sorr where STDR_STND like "%E%";
+select * from sorr where STDR_STND like "%0.45mg%";
 
 desc sor;

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="mapper.product">
+
+	<resultMap id="productResult" type="productVO">
+		<result property="prdlst_report_no" column="prdlst_report_no" />
+		<result property="prms_dt" column="prms_dt" />
+		<result property="prdt_shap_cd_nm" column="prdt_shap_cd_nm" />
+		<result property="last_updt_dtm" column="last_updt_dtm" />
+		<result property="lcns_no" column="lcns_no" />
+		<result property="prdlst_nm" column="prdlst_nm" />
+		<result property="iftkn_atnt_matr_cn" column="iftkn_atnt_matr_cn" />
+		<result property="bssh_nm" column="bssh_nm" />
+		<result property="child_crtfc_yn" column="child_crtfc_yn" />
+		<result property="etc_rawmtrl_nm" column="etc_rawmtrl_nm" />
+		<result property="stdr_stnd" column="stdr_stnd" />
+		<result property="prdlst_cdnm" column="prdlst_cdnm" />
+		<result property="induty_cd_nm" column="induty_cd_nm" />
+		<result property="dispos" column="dispos" />
+		<result property="primary_fnclty" column="primary_fnclty" />
+		<result property="frmlc_mtrqlt" column="frmlc_mtrqlt" />
+		<result property="pog_daycnt" column="pog_daycnt" />
+		<result property="cstdy_mthd" column="cstdy_mthd" />
+		<result property="indiv_rawmtrl_nm" column="indiv_rawmtrl_nm" />
+		<result property="ntk_mthd" column="ntk_mthd" />
+		<result property="hieng_lntrt_dvs_nm" column="hieng_lntrt_dvs_nm" />
+		<result property="rawmtrl_nm" column="rawmtrl_nm" />
+		<result property="production" column="production" />
+		<result property="cap_rawmtrl_nm" column="cap_rawmtrl_nm" />
+	</resultMap>
+
+	<!-- 상품 전체 항목 검색 -->
+	<select id="selectAllProduct" resultMap="productResult"	>
+	<![CDATA[
+		select * from sor order by last_updt_dtm desc
+	]]>
+	</select>
+	
+	<!-- 인허가번호 상품 검색 -->
+	<select id="selectProduct" resultMap="productResult"	>
+	<![CDATA[
+		select * from sor where PRDLST_REPORT_NO=#{prdlst_report_no}
+	]]>
+	</select>
+
+</mapper>
