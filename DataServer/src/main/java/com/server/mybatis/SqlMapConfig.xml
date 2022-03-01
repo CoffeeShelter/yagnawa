@@ -6,6 +6,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 <configuration>
 	<typeAliases>
 		<typeAlias type="com.server.data.products.ProductVO" alias="productVO" />
+		<typeAlias type="com.server.data.healthfoodfunc.HealthFoodFuncVO" alias="hffVO" />
 	</typeAliases>
 
 	<environments default="development">
@@ -23,5 +24,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 
 	<mappers>
 		<mapper resource="com/server/mybatis/mappers/product.xml" />
+		<mapper resource="com/server/mybatis/mappers/hff.xml" />
 	</mappers>
 </configuration>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="mapper.hff">
+
+	<resultMap id="hffResult" type="hffVO">
+		<result property="prdlst_report_no" column="prdlst_report_no" />
+	</resultMap>
+
+	<!-- 상품 전체 항목 검색 -->
+	<select id="selectAllHff" resultMap="hffResult"	>
+	<![CDATA[
+		select * from HEALTHFOODFUNC order by last_updt_dtm desc
+	]]>
+	</select>
+	
+	<!-- 인허가번호 상품 검색 -->
+	<select id="selectHff" resultMap="hffResult"	>
+	<![CDATA[
+		select * from HEALTHFOODFUNC where PRDLST_REPORT_NO=#{prdlst_report_no}
+	]]>
+	</select>
+
+</mapper>

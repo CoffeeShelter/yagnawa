@@ -5,45 +5,61 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Test_Product {
 
 	public static void main(String[] args) {
-
 		ProductDAO productDAO = new ProductDAO();
 		List<ProductVO> list = new ArrayList<ProductVO>();
-		
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("prdlst_report_no", "200400200022578");
-		
-		list = productDAO.selectProduct(map);
+
+		// list = productDAO.selectProduct(map);
+		list = productDAO.selectAllProductList();
 
 		Vector<ProductVO> vector = new Vector<ProductVO>(list);
 
-		for (ProductVO product : vector) {
-			String stdr = product.getStdr_stnd();
-			String[] sp = stdr.split("\n");
-
-			for (String s : sp) {
-				if(!check(s)) {
-					System.out.println(s);
-				}
-			}
-
-			break;
-		}
-	}
-
-	private static boolean check(String s) {
-		String[] checkWords = { "성상", "대장균군", "세균수" };
+		// (\d*)(\.|,*)(\d+)(\s*)(mg|ug)
 		
-		for (String checkWord : checkWords) {
-			if(s.contains(checkWord)) {
-				return true;
-			}
-		}
+		int count = 0;
+		int temp = 1;
+		for(ProductVO v : vector) {
+			if (count == temp) {
+			
+				System.out.println("[제품명]");
+				System.out.println(v.getPrdlst_nm() + "\n");
+				
+				System.out.println("[업소명]");
+				System.out.println(v.getBssh_nm() + "\n");
+			
+				System.out.println("[기능성]");
+				System.out.println(v.getPrimary_fnclty() + "\n");
+				
+				System.out.println("[기능성 원재료]");
+				System.out.println(v.getIndiv_rawmtrl_nm() + "\n");
+				
+				System.out.println("[함량정보]");
+				String stnd = v.getStdr_stnd();
+				System.out.println(stnd);
 
-		return false;
+				Pattern pattern = Pattern.compile("(\\d*)(\\.|,*)(\\d+)(\\s*)(mg|ug)");
+				Matcher matcher = pattern.matcher(stnd);
+
+				while(matcher.find()){
+				  System.out.println(matcher.group());
+				  
+				}
+			
+			}
+			if (count > temp) {
+				break;
+			}
+		
+			count += 1;
+		}
 	}
 
 }
