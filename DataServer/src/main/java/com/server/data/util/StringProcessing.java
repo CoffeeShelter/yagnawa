@@ -1,12 +1,16 @@
 package com.server.data.util;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringProcessing {
 
 	private String targetString = null;
+	private final String[] filter = { "성상", "납", "카드뮴", "수은", "비소", "대장균군", "붕해" };
+	private Pattern pattern = Pattern.compile("(\\d*)(\\.|,*)(\\d+)(\\s*)(mg|ug)");
 
 	public StringProcessing() {
 	}
@@ -16,31 +20,54 @@ public class StringProcessing {
 	}
 
 	public Map<String, String> getContent() {
-		Map<String, String> contentMap = new HashMap<String, String>();
-		String contentName = null;
-		String content = null;
-		String[] detachedString = null;
-
 		if (targetString == null) {
 			return null;
 		}
 
-		detachedString = targetString.split(" ");
-		
-		String[] newString = Arrays.copyOfRange(detachedString, 1, detachedString.length);
+		Map<String, String> contentMap = new HashMap<String, String>();
+		String[] splitStr = targetString.split("\n");
+		Vector<String> contents = filtering(splitStr);
 
-		contentName = newString[0];
-		
-		content = Arrays.deepToString(newString);
+		if (contents.size() == 0) {
+			return null;
+		}
 
-		int index1 = content.indexOf("(");
-		int index2 = content.indexOf(")");
+		for (String content : contents) {
+			Matcher matcher = pattern.matcher(content);
+			while (matcher.find()) {
+				System.out.println(content);
+				System.out.println(matcher.group());
+				break;
+			}
+		}
 
-		content = content.substring(index1 + 1, index2);
-
-		contentMap.put(contentName, content);
-		
 		return contentMap;
+	}
+
+	public Vector<String> filtering(String[] target) {
+		Vector<String> result = new Vector<String>();
+
+		for (String temp : target) {
+
+			if (checking(temp) == false) {
+				result.add(temp);
+			}
+
+		}
+
+		return result;
+	}
+
+	public boolean checking(String target) {
+		boolean check = false;
+
+		for (String str : filter) {
+			if (target.contains(str) == true) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public void setTargetString(String targetString) {

@@ -27,23 +27,33 @@ public class HealthFoodFuncDAO {
 	}
 
 	// 전체 상품 정보 조회
-	public List<HealthFoodFuncVO> selectAllProductList() {
+	public List<HealthFoodFuncVO> selectAllHff() {
 		sqlMapper = getInstance();
 		SqlSession session = sqlMapper.openSession();
 		
-		List<HealthFoodFuncVO> productList = null;
-		productList = session.selectList("mapper.product.selectAllProduct");
+		List<HealthFoodFuncVO> hffList = null;
+		hffList = session.selectList("mapper.hff.selectAllHff");
 		
-		return productList;
+		return hffList;
 	}
 	
-	public List<HealthFoodFuncVO> selectProduct(Map<String, Object> productMap){		
+	public List<HealthFoodFuncVO> selectHff(Map<String, Object> hffMap){		
 		sqlMapper = getInstance();
 		SqlSession session = sqlMapper.openSession();
 
-		List<HealthFoodFuncVO> productList = null;
-		productList = session.selectList("mapper.product.selectProduct", productMap);
+		List<HealthFoodFuncVO> hffList = null;
+		hffList = session.selectList("mapper.hff.selectHff", hffMap);
 
-		return productList;
+		return hffList;
+	}
+	
+	public int insertHff(Map<String, Object> hffMap){		
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+
+		int result = session.insert("mapper.hff.insertHff", hffMap);
+		session.commit();
+
+		return result;
 	}
 }

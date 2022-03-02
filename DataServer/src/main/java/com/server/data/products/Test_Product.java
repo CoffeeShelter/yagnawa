@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import com.server.data.util.StringProcessing;
 
 public class Test_Product {
 
@@ -22,10 +22,11 @@ public class Test_Product {
 
 		Vector<ProductVO> vector = new Vector<ProductVO>(list);
 
+		StringProcessing processing = new StringProcessing();
 		// (\d*)(\.|,*)(\d+)(\s*)(mg|ug)
 		
 		int count = 0;
-		int temp = 1;
+		int temp = 2;
 		for(ProductVO v : vector) {
 			if (count == temp) {
 			
@@ -45,13 +46,17 @@ public class Test_Product {
 				String stnd = v.getStdr_stnd();
 				System.out.println(stnd);
 
+				/*
 				Pattern pattern = Pattern.compile("(\\d*)(\\.|,*)(\\d+)(\\s*)(mg|ug)");
 				Matcher matcher = pattern.matcher(stnd);
 
 				while(matcher.find()){
 				  System.out.println(matcher.group());
-				  
 				}
+				*/
+				processing.setTargetString(stnd);
+				processing.getContent();
+				
 			
 			}
 			if (count > temp) {
@@ -61,5 +66,5 @@ public class Test_Product {
 			count += 1;
 		}
 	}
-
+	// 성상, 실리
 }

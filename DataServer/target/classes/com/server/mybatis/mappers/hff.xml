@@ -9,18 +9,98 @@
 		<result property="prdlst_report_no" column="prdlst_report_no" />
 	</resultMap>
 
-	<!-- 상품 전체 항목 검색 -->
+	<!-- 건강기능식품공전 전체 검색 -->
 	<select id="selectAllHff" resultMap="hffResult"	>
 	<![CDATA[
-		select * from HEALTHFOODFUNC order by last_updt_dtm desc
+		select * from HEALTHFOODFUNC order by PRDLST_CD desc
 	]]>
 	</select>
 	
-	<!-- 인허가번호 상품 검색 -->
-	<select id="selectHff" resultMap="hffResult"	>
+	<!-- 건강기능식품공전 품목별 검색 -->
+	<select id="selectHff" resultMap="hffResult">
 	<![CDATA[
-		select * from HEALTHFOODFUNC where PRDLST_REPORT_NO=#{prdlst_report_no}
+		select * from HEALTHFOODFUNC where PC_KOR_NM=#{pc_kor_nm}
 	]]>
 	</select>
+	
+	<!-- 
+	<![CDATA[
+		INSERT INTO HEALTHFOODFUNC (
+	   		PRDLST_CD,
+		    PC_KOR_NM,
+		    TESTITM_CD,
+		    T_KOR_NM,
+		    FNPRT_ITM_NM,
+		    SPEC_VAL,
+		    SPEC_VAL_SUMUP,
+		    VALD_BEGN_DT,
+		    VALD_END_DT,
+		    SORC,
+		    MXMM_VAL,
+		    NIMM_VAL,
+		    INJRY_YN,
+		    UNIT_NM
+		) SELECT
+		    #{PRDLST_CD},
+		    #{PC_KOR_NM},
+		    #{TESTITM_CD},
+		    #{T_KOR_NM},
+		    #{FNPRT_ITM_NM},
+		    #{SPEC_VAL},
+		    #{SPEC_VAL_SUMUP},
+		    #{VALD_BEGN_DT},
+		    #{VALD_END_DT},
+		    #{SORC},
+		    #{MXMM_VAL},
+		    #{NIMM_VAL},
+		    #{INJRY_YN},
+		    #{UNIT_NM}
+		FROM DUAL
+		WHERE NOT EXISTS (
+		    SELECT *
+		    FROM HEALTHFOODFUNC
+		    WHERE PRDLST_CD = #{PRDLST_CD} AND PC_KOR_NM = #{PC_KOR_NM} AND TESTITM_CD = #{TESTITM_CD}
+		)
+	]]>
+	 -->
+	<!-- 건강기능식품공전 정보 추가 -->
+	<insert id="insertHff" parameterType="java.util.Map">
 
+		INSERT INTO HEALTHFOODFUNC (
+	   		PRDLST_CD,
+		    PC_KOR_NM,
+		    TESTITM_CD,
+		    T_KOR_NM,
+		    FNPRT_ITM_NM,
+		    SPEC_VAL,
+		    SPEC_VAL_SUMUP,
+		    VALD_BEGN_DT,
+		    VALD_END_DT,
+		    SORC,
+		    MXMM_VAL,
+		    NIMM_VAL,
+		    INJRY_YN,
+		    UNIT_NM
+		) VALUES
+		<foreach collection="list" item="item" separator=",">
+		(
+			#{item.prdlst_cd},
+		    #{item.pc_kor_nm},
+		    #{item.testitm_cd},
+		    #{item.t_kor_nm},
+		    #{item.fnprt_itm_nm},
+		    #{item.spec_val},
+		    #{item.spec_val_sumup},
+		    #{item.vald_begn_dt},
+		    #{item.vald_end_dt},
+		    #{item.sorc},
+		    #{item.mxmm_val},
+		    #{item.nimm_val},
+		    #{item.injry_yn},
+		    #{item.unit_nm}
+		)
+		</foreach>
+
+	</insert>
+	
 </mapper>
