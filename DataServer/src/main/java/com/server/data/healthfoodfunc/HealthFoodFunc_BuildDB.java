@@ -17,11 +17,14 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class HealthFoodFunc_BuildDB {
+	private static final String BASE_URL = "http://openapi.foodsafetykorea.go.kr/api";
 	private static final String KEY_ID = "97f136f5a8004dc382ca";
 	private static final String SERVICE_ID = "I0960";
+	private static final String DATA_TYPE = "json";
 
-	public static void main(String args[]) throws IOException, ParseException {
-		String api_url = "http://openapi.foodsafetykorea.go.kr/api/" + KEY_ID + "/" + SERVICE_ID + "/json/1/999";
+	public static void run() throws IOException, ParseException {
+		// String api_url = BASE_URL + "/" + KEY_ID + "/" + SERVICE_ID + "/" + DATA_TYPE +"/1/999";
+		String base_api_url = BASE_URL + "/" + KEY_ID + "/" + SERVICE_ID + "/" + DATA_TYPE;
 
 		int startIdx = 1;
 		int endIdx = 999;
@@ -32,8 +35,7 @@ public class HealthFoodFunc_BuildDB {
 			String sIdx = Integer.toString(startIdx);
 			String eIdx = Integer.toString(endIdx);
 
-			api_url = "http://openapi.foodsafetykorea.go.kr/api/" + KEY_ID + "/" + SERVICE_ID + "/json/" + sIdx + "/"
-					+ eIdx;
+			String api_url = base_api_url + "/" + sIdx + "/" + eIdx;
 
 			System.out.println("[요청중] : " + api_url);
 
@@ -56,7 +58,6 @@ public class HealthFoodFunc_BuildDB {
 				e.printStackTrace();
 			}
 
-			// System.out.println(jsonData);
 			System.out.println("데이터 수집 완료!");
 
 			JSONObject objData = (JSONObject) new JSONParser().parse(jsonData);
@@ -126,6 +127,16 @@ public class HealthFoodFunc_BuildDB {
 
 	}
 
+	public static void main(String args[]){
+		try {
+			run();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
 
 /*

@@ -70,21 +70,17 @@ CREATE TABLE IF NOT EXISTS HEALTHFOODFUNC (
     MXMM_VAL VARCHAR(20),	# 최대값
     NIMM_VAL VARCHAR(20),	# 최소값
     INJRY_YN VARCHAR(20),	# 위해여부
-    UNIT_NM VARCHAR(20)	# 단위명
-    # PRIMARY KEY(PRDLST_CD, PC_KOR_NM, TESTITM_CD, T_KOR_NM, SPEC_VAL, SPEC_VAL_SUMUP)
+    UNIT_NM VARCHAR(20),	# 단위명
+    PRIMARY KEY(PRDLST_CD, TESTITM_CD, SPEC_VAL, SPEC_VAL_SUMUP, SORC)
 ) CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 SHOW TABLES;
 desc HEALTHFOODFUNC;
 
 select * from healthFoodFunc;
+select count(*) from healthFoodFunc;
 select * from HEALTHFOODFUNC where not replace(pc_kor_nm, ' ', '') like concat('%', replace(t_kor_nm, ' ', ''), '%');
-select * 
-from HEALTHFOODFUNC 
-where (
-	select count(t_kor_nm)
-    from HEALTHFOODFUNC
-) > 2500;
+
 select * from HEALTHFOODFUNC where PC_KOR_NM like '%프로바이오틱스%';
 
 alter table HEALTHFOODFUNC modify SORC VARCHAR(200);
@@ -100,3 +96,20 @@ select count(*) from sorr;
 select * from sorr where STDR_STND like "%0.45mg%";
 
 desc sor;
+
+CREATE DATABASE IF NOT EXISTS TESTDATABASE;
+USE TESTDATABASE;
+
+DROP TABLE TABLE1;
+
+CREATE TABLE TABLE1 (
+	NUM1 INT,
+    NUM2 INT,
+    NUM3 INT,
+    PRIMARY KEY(NUM1, NUM2)
+);
+
+SELECT * FROM TABLE1;
+
+INSERT IGNORE INTO TABLE1 VALUES (1, 1, 1 ), (2, 2, 2), (1, 2, 2);
+
