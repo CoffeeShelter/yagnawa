@@ -1,6 +1,6 @@
 # yagnawa
 
-A new Flutter project.
+이미지 기반 건강기능식품 분석 및 합리적인 구매 도움 서비스 앱
 
 ## Getting Started
 
