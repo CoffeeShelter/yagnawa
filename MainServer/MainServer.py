@@ -1,13 +1,18 @@
 from flask import Flask, request, jsonify
+from nutrient import Nutrient
+"""
 from Certified_Mark_Detection_Program import load_image_into_numpy_array, input_image_to_white_matrix, run_inference_for_single_image, getResultImage, getClassName
 import base64
 import os
 import io
 import tensorflow as tf
 from PIL import Image
+"""
+import nutrient
+import pandas as pd
 
 app = Flask(__name__)
-
+"""
 # Path to frozen detection graph. This is the actual model that is used for the object detection.
 PATH_TO_FROZEN_GRAPH = './certified_mark_model/output_inference_graph_v1/frozen_inference_graph.pb'
 
@@ -24,7 +29,7 @@ with detection_graph.as_default():
         tf.import_graph_def(od_graph_def, name='')
 
 @app.route('/detection/mark', methods=['POST'])
-def userLogin():
+def detection_mark():
     data = request.get_json()
     imageData = data['image']['data']
 
@@ -43,6 +48,18 @@ def userLogin():
     result_image = result_image[0:width, 0:height]
 
     return getClassName(output_dict)[0]
+"""
+@app.route('/products/<productName>', methods=['GET', 'POST'])
+def detection_mark(productName):
+    nutrient = Nutrient()
+    nutrient.connectDatabase()
+    nutrient.createCursor()
+    result = nutrient.getProductInfo(productName)
+    result = pd.DataFrame(result)
+
+    result = result.to_json(orient='records')
+
+    return result
 
 if __name__=="__main__":
     app.run()
