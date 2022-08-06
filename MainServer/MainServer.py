@@ -59,7 +59,12 @@ def detection_mark(productName):
 
     result = result.to_json(orient='records')
 
-    return result
+    response = app.response_class(
+        response=result,
+        mimetype='application/json'
+    )
+
+    return response
 
 if __name__=="__main__":
     app.run()
