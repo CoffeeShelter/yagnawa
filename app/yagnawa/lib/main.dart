@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:yagnawa/product_info_screen.dart';
-import 'products.dart';
 import 'appbar.dart';
 
 void main() {
@@ -16,7 +15,8 @@ class MainPage extends StatelessWidget {
       title: 'YagNaWa',
       home: Scaffold(
         appBar: yacnawaAppBar(),
-        body: const ProductInfoScreen(),
+        body: const MainScreen(),
+        // body: const ProductInfoScreen(),
       ),
     );
   }
@@ -34,9 +34,9 @@ class MainScreen extends StatelessWidget {
         child: const Text('Go'),
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const ProductInfoScreen()));
+            context,
+            MaterialPageRoute(builder: (context) => const ProductInfoPage()),
+          );
         },
       ),
     );
