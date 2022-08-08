@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:yagnawa/constants.dart';
 import 'appbar.dart';
 
 class ProductInfoPage extends StatelessWidget {
@@ -54,7 +55,7 @@ class ProductInfoScreen extends StatelessWidget {
               margin: const EdgeInsets.only(
                 top: 3,
               ),
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(yDefaultPadding),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -65,7 +66,7 @@ class ProductInfoScreen extends StatelessWidget {
                   const Text(
                     '고려은단 비타민C 1000 + 비타민D',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: yDefaultBigFontSize,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -73,7 +74,7 @@ class ProductInfoScreen extends StatelessWidget {
                   const Text(
                     '고려은단 헬스케어(주)',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: yDefaultBigFontSize,
                       fontWeight: FontWeight.bold,
                       color: Colors.black54,
                     ),
@@ -91,7 +92,7 @@ class ProductInfoScreen extends StatelessWidget {
                       const Text(
                         '인증 현황',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: yDefaultFontSize,
                           fontWeight: FontWeight.w400,
                           color: Colors.black,
                         ),
@@ -120,7 +121,7 @@ class ProductInfoScreen extends StatelessWidget {
               margin: const EdgeInsets.only(
                 top: 3,
               ),
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(yDefaultPadding),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -131,15 +132,18 @@ class ProductInfoScreen extends StatelessWidget {
                   Text(
                     '기능성',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: yDefaultBigFontSize,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Text(
                     '1. 결합조직 형성과 기능유지에 필요\n2.철의 흡수에 필요\n3.유해산소로부터 세포를 보호하는데 필요',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: yDefaultFontSize,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -154,7 +158,7 @@ class ProductInfoScreen extends StatelessWidget {
               margin: const EdgeInsets.only(
                 top: 3,
               ),
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(yDefaultPadding),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -166,11 +170,12 @@ class ProductInfoScreen extends StatelessWidget {
                     alignment: Alignment.topLeft,
                     margin: const EdgeInsets.only(
                       top: 3,
+                      bottom: 10,
                     ),
                     child: const Text(
                       '함량 정보',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: yDefaultBigFontSize,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -195,18 +200,19 @@ class ProductInfoScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Container(
+                          padding: const EdgeInsets.all(yDefaultPadding / 2.0),
                           alignment: Alignment.topLeft,
                           child: const Text(
                             '영양성분',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: yDefaultFontSize,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black54,
+                              color: Colors.black,
                             ),
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.all(5.0),
+                          padding: const EdgeInsets.all(yDefaultPadding),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
@@ -257,7 +263,7 @@ class ProductInfoScreen extends StatelessWidget {
               margin: const EdgeInsets.only(
                 top: 3,
               ),
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(yDefaultPadding),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -265,8 +271,18 @@ class ProductInfoScreen extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Container(
+                    margin: const EdgeInsets.only(
+                      bottom: 10,
+                    ),
                     alignment: Alignment.topLeft,
-                    child: const Text('이런 제품은 어떤가요?'),
+                    child: const Text(
+                      '이런 제품은 어떤가요?',
+                      style: TextStyle(
+                        fontSize: yDefaultBigFontSize,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                   Container(
                     alignment: Alignment.center,
@@ -307,16 +323,16 @@ class ProductInfoScreen extends StatelessWidget {
               margin: const EdgeInsets.only(
                 top: 3,
               ),
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(yDefaultPadding),
               decoration: const BoxDecoration(
                 color: Colors.white,
               ),
               child: const Text(
                 '구매하러 가기',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: yDefaultBigFontSize,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black54,
+                  color: Colors.black,
                 ),
               ),
             )
@@ -396,7 +412,7 @@ class RecommendationProduct extends StatelessWidget {
           Text(
             productName,
             style: const TextStyle(
-              fontSize: 14,
+              fontSize: yDefaultFontSize,
               fontWeight: FontWeight.bold,
               color: Colors.black54,
             ),
@@ -404,7 +420,7 @@ class RecommendationProduct extends StatelessWidget {
           Text(
             componyName,
             style: const TextStyle(
-              fontSize: 14,
+              fontSize: yDefaultFontSize,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
