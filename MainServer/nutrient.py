@@ -27,7 +27,7 @@ class Nutrient:
     def createCursor(self, cursor=pymysql.cursors.DictCursor):
         self.cursor = self.nutrient_db.cursor(cursor)
 
-    def getProductInfo(self, product_name):
+    def getProductsInfo(self, product_name):
         sql = f"SELECT * FROM sor WHERE PRDLST_NM like '%{product_name}%'"
 
         if(self.cursor != None):
@@ -38,4 +38,17 @@ class Nutrient:
             return None
         
         result = self.cursor.fetchall()
+        return result
+
+    def getProductInfo(self, product_id):
+        sql = f"SELECT * FROM sor WHERE PRDLST_REPORT_NO = '{product_id}'"
+
+        if(self.cursor != None):
+            print(f'[sql]: {sql}')
+            self.cursor.execute(sql)
+        else:
+            print('cursor를 생성하십시오.')
+            return None
+        
+        result = self.cursor.fetchone()
         return result

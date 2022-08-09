@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yagnawa/product_info_screen.dart';
+import 'package:yagnawa/products.dart';
 import 'appbar.dart';
 import 'constants.dart';
 
@@ -45,10 +46,20 @@ class MainScreen extends StatelessWidget {
         ),
         child: const Text('Go'),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ProductInfoPage()),
-          );
+          Future<ProductList> products = getProduct();
+
+          products.then((val) {
+            // print('val: ${val.products[0].functionality}');
+            print('완료');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductInfoPage(),
+              ),
+            );
+          }).catchError((error) {
+            print('error: $error');
+          });
         },
       ),
     );

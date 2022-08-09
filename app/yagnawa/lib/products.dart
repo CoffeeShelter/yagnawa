@@ -6,19 +6,23 @@ late String productName;
 late String componyName;
 
 void main() {
-  getData();
+  getProduct();
 }
 
-Future<ProductList> getData() async {
+Future<ProductList> getProduct() async {
   http.Response response = await http.get(
-    Uri.encodeFull('http://127.0.0.1:5000/products/비타민'),
-    headers: {"Accept": "application/json"},
+    Uri.encodeFull('http://localhost:5000/products/비타민'),
+    headers: {
+      "Accept": "application/json",
+      "Origin": "http://localhost",
+    },
   );
 
   List<dynamic> data = jsonDecode(response.body);
 
   ProductList productList = new ProductList.fromJson(data);
   // print(productList.products[0].functionality);
+
   return productList;
 }
 

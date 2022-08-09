@@ -49,25 +49,72 @@ def detection_mark():
 
     return getClassName(output_dict)[0]
 """
-@app.route('/products/<productName>', methods=['GET', 'POST'])
-def detection_mark(productName):
+
+"""
+요청 URL : /products/<상품명>
+요청 메서드 : GET
+반환 : 상품 목록
+"""
+
+
+@app.route('/products/<productName>', methods=['GET'])
+def getProducts(productName):
     nutrient = Nutrient()
     nutrient.connectDatabase()
     nutrient.createCursor()
-    result = nutrient.getProductInfo(productName)
+    result = nutrient.getProductsInfo(productName)
     result = pd.DataFrame(result)
 
     result = result.to_json(orient='records')
 
     response = app.response_class(
         response=result,
-        mimetype='application/json'
+        mimetype='application/json',
     )
+
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = 'application/json'
+    response.headers['charset'] = 'utf-8'
 
     return response
 
-if __name__=="__main__":
-    app.run()
+
+"""
+요청 URL : /product/<상품 코드>
+요청 메서드 : GET
+반환 : 단일 상품
+"""
+
+
+@app.route('/product/<productID>', methods=['GET'])
+def getProduct(productID):
+    nutrient = Nutrient()
+    nutrient.connectDatabase()
+    nutrient.createCursor()
+    result = nutrient.getProductInfo(productID)
+
+    # print(result)
+
+    result = pd.DataFrame(result)
+
+    result = result.to_json(orient='columns')
+
+    response = app.response_class(
+        response=result,
+        mimetype='application/json',
+    )
+
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type'] = 'application/json'
+    response.headers['charset'] = 'utf-8'
+
+    return response
+
+
+if __name__ == "__main__":
+    app.run(
+        host='0.0.0.0'
+    )
 
 # image = Image.open(filePath)
 # image_np = load_image_into_numpy_array(image)
