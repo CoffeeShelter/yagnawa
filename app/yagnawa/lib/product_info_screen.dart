@@ -2,38 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:yagnawa/constants.dart';
-import 'package:yagnawa/product_controller.dart';
 import 'package:yagnawa/products.dart';
 import 'appbar.dart';
 
 class ProductInfoPage extends StatelessWidget {
-  ProductInfoPage({
+  const ProductInfoPage({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String? productName = Get.parameters['productName'];
+
+    productName ??= '';
+
     return MaterialApp(
       title: 'YagNaWa',
       home: Scaffold(
         appBar: yacnawaAppBar(),
-        body: ProductInfoScreen(),
+        body: ProductInfoScreen(
+          productName: productName,
+        ),
       ),
     );
   }
 }
 
 class ProductInfoScreen extends StatelessWidget {
+  String productName;
+
   ProductInfoScreen({
     Key? key,
+    required this.productName,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
+    print(productName);
+
     return FutureBuilder(
-      future: getProduct(),
+      future: getProduct(
+        productName: productName,
+      ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         // API 응답 기다리는 중
         if (snapshot.hasData == false) {

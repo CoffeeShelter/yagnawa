@@ -9,9 +9,9 @@ void main() {
   getProduct();
 }
 
-Future<ProductList> getProduct() async {
+Future<ProductList> getProduct({productName}) async {
   http.Response response = await http.get(
-    Uri.encodeFull('http://localhost:5000/products/비타민'),
+    Uri.encodeFull('http://localhost:5000/products/$productName'),
     headers: {
       "Accept": "application/json",
       "Origin": "http://localhost",

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 AppBar yacnawaAppBar() {
   return AppBar(
-    leading: const IconButton(
-      icon: Icon(Icons.menu),
-      onPressed: null,
+    leading: IconButton(
+      icon: const Icon(Icons.arrow_back_ios_rounded),
+      onPressed: () {
+        Get.back();
+      },
     ),
     title: const Text("약나와"),
     centerTitle: true,
