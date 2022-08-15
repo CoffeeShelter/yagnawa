@@ -9,7 +9,7 @@ void main() {
   getProduct();
 }
 
-Future<ProductList> getProduct({productName}) async {
+Future<Product> getProduct({productName}) async {
   http.Response response = await http.get(
     Uri.encodeFull('http://localhost:5000/products/$productName'),
     headers: {
@@ -18,26 +18,31 @@ Future<ProductList> getProduct({productName}) async {
     },
   );
 
-  List<dynamic> data = jsonDecode(response.body);
+  // List<dynamic> data = jsonDecode(response.body);
+  Map<String, dynamic> data = jsonDecode(response.body);
 
-  ProductList productList = new ProductList.fromJson(data);
+  // ProductList productList = ProductList.fromJson(data);
+  Product product = Product.fromJson(data);
   // print(productList.products[0].functionality);
 
-  return productList;
+  print(product.functionality);
+  print(product.componyName);
+
+  return product;
 }
 
 class ProductList {
   List<Product> products;
 
   ProductList({
-    products,
-  }) : this.products = products;
+    required this.products,
+  });
 
   factory ProductList.fromJson(List<dynamic> parsedJson) {
     List<Product> products =
         parsedJson.map((i) => Product.fromJson(i)).toList();
 
-    return new ProductList(products: products);
+    return ProductList(products: products);
   }
 }
 
@@ -48,17 +53,14 @@ class Product {
   String contents; // 함량 정보
 
   Product({
-    productName,
-    componyName,
-    functionality,
-    contents,
-  })  : this.productName = productName,
-        this.componyName = componyName,
-        this.functionality = functionality,
-        this.contents = contents;
+    required this.productName,
+    required this.componyName,
+    required this.functionality,
+    required this.contents,
+  });
 
   factory Product.fromJson(Map<String, dynamic> json) {
-    return new Product(
+    return Product(
       productName: json['PRDLST_NM'],
       componyName: json['BSSH_NM'],
       functionality: json['PRIMARY_FNCLTY'],

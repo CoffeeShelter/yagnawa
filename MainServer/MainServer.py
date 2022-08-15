@@ -63,6 +63,7 @@ def getProducts(productName):
     nutrient.connectDatabase()
     nutrient.createCursor()
     result = nutrient.getProductsInfo(productName)
+
     result = pd.DataFrame(result)
 
     result = result.to_json(orient='records')
@@ -95,7 +96,7 @@ def getProduct(productID):
 
     # print(result)
 
-    result = pd.DataFrame(result)
+    result = pd.DataFrame.from_dict([result])
 
     result = result.to_json(orient='columns')
 

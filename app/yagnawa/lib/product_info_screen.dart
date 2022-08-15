@@ -146,7 +146,7 @@ class ProductInfoScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          snapshot.data.products[0].productName,
+                          snapshot.data.productName ??= 'null',
                           style: const TextStyle(
                             fontSize: yDefaultBigFontSize,
                             fontWeight: FontWeight.bold,
@@ -154,7 +154,7 @@ class ProductInfoScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          snapshot.data.products[0].componyName,
+                          snapshot.data.componyName ??= 'null',
                           style: const TextStyle(
                             fontSize: yDefaultBigFontSize,
                             fontWeight: FontWeight.bold,
@@ -223,7 +223,7 @@ class ProductInfoScreen extends StatelessWidget {
                           height: 10,
                         ),
                         Text(
-                          snapshot.data.products[0].functionality,
+                          snapshot.data.functionality ??= 'null',
                           style: const TextStyle(
                             fontSize: yDefaultFontSize,
                             fontWeight: FontWeight.bold,
@@ -336,7 +336,7 @@ class ProductInfoScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                snapshot.data.products[0].contents,
+                                snapshot.data.contents ??= 'null',
                                 style: const TextStyle(
                                   fontSize: yDefaultFontSize,
                                   fontWeight: FontWeight.bold,
