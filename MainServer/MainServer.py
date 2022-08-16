@@ -1,18 +1,34 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, redirect, jsonify
+from flask_cors import CORS
+
 from nutrient import Nutrient
-"""
-from Certified_Mark_Detection_Program import load_image_into_numpy_array, input_image_to_white_matrix, run_inference_for_single_image, getResultImage, getClassName
+from Certified_Mark_Detection_Program import *
 import base64
 import os
 import io
 import tensorflow as tf
 from PIL import Image
-"""
-import nutrient
 import pandas as pd
+import urllib.request
+
+from werkzeug.utils import secure_filename
+
 
 app = Flask(__name__)
-"""
+
+UPLOAD_FOLDER = './uploads'
+
+app = Flask(__name__)
+
+CORS(app, resources={r'*': {'origins': '*'}})
+
+#app.secret_key = "secret key"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+
 # Path to frozen detection graph. This is the actual model that is used for the object detection.
 PATH_TO_FROZEN_GRAPH = './certified_mark_model/output_inference_graph_v1/frozen_inference_graph.pb'
 
@@ -48,7 +64,7 @@ def detection_mark():
     result_image = result_image[0:width, 0:height]
 
     return getClassName(output_dict)[0]
-"""
+
 
 """
 요청 URL : /products/<상품명>
@@ -110,6 +126,61 @@ def getProduct(productID):
     response.headers['charset'] = 'utf-8'
 
     return response
+
+
+def allowed_file(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/image', methods=['POST'])
+def upload_file():
+    # check if the post request has the file part
+    if 'files[]' not in request.files:
+        resp = jsonify({'message' : 'No file part in the request'})
+        resp.status_code = 400
+        return resp
+	
+    files = request.files.getlist('files[]')
+
+    errors = {}
+    success = False
+	
+    for file in files:		
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            success = True
+
+            image = Image.open(file)
+            image_np = load_image_into_numpy_array(image)
+
+            width, height, channel = image_np.shape
+
+            # 입력 이미지 전처리 ( 해상도 변경 ( 1400 x 1400 ))
+            image_np = input_image_to_white_matrix(image_np, 1400, 1400)
+
+            # 인증마크 탐지 결과 얻기
+            output_dict = run_inference_for_single_image(image_np, detection_graph)
+            result_image = getResultImage(image_np, output_dict)
+            result_image = result_image[0:width, 0:height]
+
+            marks = getClassName(output_dict)[0]
+            print({'mark' : f'{marks}'})
+        else:
+            errors[file.filename] = 'File type is not allowed'
+	
+    if success and errors:
+        errors['message'] = 'File(s) successfully uploaded'
+        resp = jsonify(errors)
+        resp.status_code = 500
+        return resp
+    if success:
+        resp = jsonify({'mark' : f'{marks}'})
+        resp.status_code = 201
+        return resp
+    else:
+        resp = jsonify(errors)
+        resp.status_code = 500
+        return resp
 
 
 if __name__ == "__main__":

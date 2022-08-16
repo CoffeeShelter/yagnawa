@@ -14,7 +14,7 @@ class Product():
         self.contents = ''
 
     def setProduct(self, productName, componyName, functionally, contents):
-        self.productname = productName
+        self.productName = productName
         self.componyName = componyName
         self.functionally = self.formattingFunctionally(functionally)
         self.contents = contents

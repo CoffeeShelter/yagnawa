@@ -222,6 +222,25 @@ class ProductInfoScreen extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
+                        SizedBox(
+                          height: size.height *
+                              0.05 *
+                              snapshot.data.functionality.length,
+                          child: ListView.builder(
+                            itemCount: snapshot.data.functionality.length,
+                            itemBuilder: (context, index) {
+                              return Text(
+                                snapshot.data.functionality[index] ??= 'null',
+                                style: const TextStyle(
+                                  fontSize: yDefaultFontSize,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                        /*
                         Text(
                           snapshot.data.functionality ??= 'null',
                           style: const TextStyle(
@@ -230,6 +249,7 @@ class ProductInfoScreen extends StatelessWidget {
                             color: Colors.black,
                           ),
                         ),
+                        */
                       ],
                     ),
                   ),
