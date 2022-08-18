@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'file_management.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
           child: Container(
             child: TextButton(
               onPressed: () {
-                uploadImage('image', File('assets/images/gmp.png'));
+                uploadImage('비타민', File('assets/images/gmp.png'));
               },
               child: Text('Upload'),
             ),
@@ -34,11 +35,11 @@ class MyApp extends StatelessWidget {
   }
 }
 
-uploadImage(String title, File file) async {
+uploadImage(String productName, File file) async {
   var request =
       http.MultipartRequest("POST", Uri.parse("http://localhost:5000/image"));
 
-  // request.fields['title'] = "dummyImage";
+  request.fields['productName'] = productName;
   request.headers['Origin'] = "http://localhost";
 
   var picture = http.MultipartFile.fromBytes(
