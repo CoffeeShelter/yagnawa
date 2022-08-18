@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yagnawa/product_info_screen.dart';
+import 'package:yagnawa/products_list_screen.dart';
 // import 'appbar.dart';
 import 'main_screen.dart';
 
@@ -18,13 +19,12 @@ class MainPage extends StatelessWidget {
       getPages: [
         GetPage(
           name: '/product',
+          // page: () => const ProductListScreen(),
           page: () => const ProductInfoPage(),
         ),
       ],
-      home: Scaffold(
-        body: MainScreen(),
-        // body: const ProductInfoScreen(),
-      ),
+      // home: MainScreen(),
+      home: ProductListScreen(),
     );
   }
 }

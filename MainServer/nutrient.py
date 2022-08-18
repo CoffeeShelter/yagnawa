@@ -1,6 +1,7 @@
 import pymysql
 import pandas as pd
 
+
 class Nutrient:
     def __init__(self, user='root', password='1234', host='localhost', db='nutrient', charset='utf-8'):
         self.nutrient_db = None
@@ -36,7 +37,7 @@ class Nutrient:
         else:
             print('cursor를 생성하십시오.')
             return None
-        
+
         result = self.cursor.fetchall()
         return result
 
@@ -49,6 +50,6 @@ class Nutrient:
         else:
             print('cursor를 생성하십시오.')
             return None
-        
+
         result = self.cursor.fetchone()
         return result
