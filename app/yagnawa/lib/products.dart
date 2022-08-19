@@ -9,7 +9,7 @@ void main() {
   getProduct();
 }
 
-Future<Product> getProduct({productName}) async {
+Future<ProductList> getProduct({productName}) async {
   http.Response response = await http.get(
     Uri.encodeFull('http://localhost:5000/products/$productName'),
     headers: {
@@ -18,16 +18,17 @@ Future<Product> getProduct({productName}) async {
     },
   );
 
-  // List<dynamic> data = jsonDecode(response.body);
-  Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+  List<dynamic> data = jsonDecode(response.body);
+  // Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
 
-  // ProductList productList = ProductList.fromJson(data);
-  Product product = Product.fromJson(data);
-  // print(productList.products[0].functionality);
+  ProductList productList = ProductList.fromJson(data);
+  // Product product = Product.fromJson(data);
+  print(productList.products[0].functionality);
 
   // print(data.values);
 
-  return product;
+  // return product;
+  return productList;
 }
 
 class ProductList {

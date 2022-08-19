@@ -63,7 +63,7 @@ class MainScreen extends StatelessWidget {
                     color: yDefaultGreen,
                     iconSize: 22.0,
                     onPressed: () {
-                      Get.toNamed('/product?productName=${myController.text}');
+                      Get.toNamed('/products?productName=${myController.text}');
                       myController.clear();
                     },
                   ),
