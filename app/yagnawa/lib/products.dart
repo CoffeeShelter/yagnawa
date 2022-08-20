@@ -18,7 +18,7 @@ Future<ProductList> getProduct({productName}) async {
     },
   );
 
-  List<dynamic> data = jsonDecode(response.body);
+  List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
   print('[data length]: ${data.length}');
   // Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
 
