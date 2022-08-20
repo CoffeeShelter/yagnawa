@@ -147,7 +147,7 @@ class ItemCard extends StatelessWidget {
           bottom: 6.0,
         ),
         color: Colors.white,
-        height: size.height * 0.15,
+        height: size.height * 0.17,
         child: Stack(
           children: <Widget>[
             Container(
@@ -173,11 +173,7 @@ class ItemCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(
-                      top: 5.0,
-                      bottom: 5.0,
-                    ),
+                  SizedBox(
                     width: 330,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
