@@ -69,7 +69,7 @@ class MainScreen extends StatelessWidget {
                   ),
                 ),
                 onSubmitted: (value) {
-                  Get.toNamed('/product?productName=$value');
+                  Get.toNamed('/products?productName=$value');
                   myController.clear();
                 },
               ),
@@ -128,7 +128,7 @@ class QuickButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.toNamed('/product?productName=$title');
+        Get.toNamed('/products?productName=$title');
       },
       child: Container(
         padding: const EdgeInsets.only(
@@ -188,7 +188,7 @@ child: ElevatedButton(
         ),
         child: const Text('Go'),
         onPressed: () {
-          Get.toNamed('/product?productName=비타민');
+          Get.toNamed('/products?productName=비타민');
         },
       ),
     );

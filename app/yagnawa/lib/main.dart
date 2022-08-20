@@ -24,7 +24,7 @@ class MainPage extends StatelessWidget {
         ),
         GetPage(
           name: '/products',
-          page: () => ProductListScreen(),
+          page: () => const ProductListPage(),
         ),
       ],
       home: MainScreen(),

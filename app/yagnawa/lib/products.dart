@@ -19,10 +19,12 @@ Future<ProductList> getProduct({productName}) async {
   );
 
   List<dynamic> data = jsonDecode(response.body);
+  print('[data length]: ${data.length}');
   // Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
 
   ProductList productList = ProductList.fromJson(data);
   // Product product = Product.fromJson(data);
+
   print(productList.products[0].functionality);
 
   // print(data.values);
@@ -63,7 +65,7 @@ class Product {
     return Product(
       productName: json['productName'] ??= 'null',
       componyName: json['componyName'] ??= 'null',
-      functionality: json['functionally'] ??= 'null',
+      functionality: json['functionally'] ??= [],
       contents: json['contents'] ??= 'null',
     );
   }

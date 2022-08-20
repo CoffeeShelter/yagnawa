@@ -1,104 +1,124 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yagnawa/products.dart';
 import 'constants.dart';
+import 'products.dart';
+
+class ProductListPage extends StatelessWidget {
+  const ProductListPage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String? productName = Get.parameters['productName'];
+
+    productName ??= '';
+
+    return MaterialApp(
+      title: 'YagNaWa',
+      home: Scaffold(
+        body: ProductListScreen(
+          productName: productName,
+        ),
+      ),
+    );
+  }
+}
 
 class ProductListScreen extends StatelessWidget {
-  ProductListScreen({Key? key}) : super(key: key);
+  ProductListScreen({Key? key, required this.productName}) : super(key: key);
 
-  List<Color> colors = [yDefaultDarkGreen, yDefaultGreen];
+  final List<Color> colors = [yDefaultDarkGreen, yDefaultGreen];
+  final String productName;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    String? productName = Get.parameters['productName'];
-
-    productName ??= '';
-
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          TopArea(size: size),
-          FutureBuilder(
-            future: getProduct(
-              productName: productName,
-            ),
-            builder: (context, snapshot) {
-              if (snapshot.hasData == false) {
-                print('기다리는중');
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const <Widget>[
-                      CircularProgressIndicator(),
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                      ),
-                      Text(
-                        '제품 정보를 가져오는 중 입니다',
-                        style: TextStyle(
-                          fontSize: yDefaultFontSize,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                print("에러");
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text(
-                        '제품 정보를 가져오지 못했습니다',
-                        style: TextStyle(
-                          fontSize: yDefaultFontSize,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                        height: 20,
-                      ),
-                      Text(
-                        '${snapshot.error}',
-                        style: const TextStyle(
-                          fontSize: yDefaultFontSize,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return Expanded(
-                  child: Container(
-                    color: yDefaultGrey,
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: 100,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ItemCard(
-                          size: size,
-                          colors: colors,
-                          index: index,
-                        );
-                      },
-                    ),
-                  ),
-                );
-              }
-            },
-          ),
-        ],
+    return FutureBuilder(
+      future: getProduct(
+        productName: productName,
       ),
+      builder: (context, snapshot) {
+        if (snapshot.hasData == false) {
+          print('기다리는중');
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const <Widget>[
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                ),
+                Text(
+                  '제품 정보를 가져오는 중 입니다',
+                  style: TextStyle(
+                    fontSize: yDefaultFontSize,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          );
+        } else if (snapshot.hasError) {
+          print("에러");
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text(
+                  '제품 정보를 가져오지 못했습니다',
+                  style: TextStyle(
+                    fontSize: yDefaultFontSize,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                  height: 20,
+                ),
+                Text(
+                  '${snapshot.error}',
+                  style: const TextStyle(
+                    fontSize: yDefaultFontSize,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          );
+        } else {
+          return Column(
+            children: <Widget>[
+              TopArea(size: size),
+              Expanded(
+                child: Container(
+                  color: yDefaultGrey,
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: 100,
+                    itemBuilder: (BuildContext context, int index) {
+                      ProductList productList = snapshot.data as ProductList;
+
+                      return ItemCard(
+                        size: size,
+                        colors: colors,
+                        index: index,
+                        product: productList.products[index],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 }
@@ -109,11 +129,13 @@ class ItemCard extends StatelessWidget {
     required this.size,
     required this.colors,
     required this.index,
+    required this.product,
   }) : super(key: key);
 
   final Size size;
   final List<Color> colors;
   final int index;
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -161,9 +183,10 @@ class ItemCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        const Text(
-                          '건강기능식품 상품 명 어쩌구 저쩌궁',
-                          style: TextStyle(
+                        Text(
+                          product.componyName,
+                          // '건강기능식품 상품 명 어쩌구 저쩌궁',
+                          style: const TextStyle(
                             fontSize: yDefaultBigFontSize + 2,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
