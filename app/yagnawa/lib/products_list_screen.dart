@@ -184,8 +184,7 @@ class ItemCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          product.componyName,
-                          // '건강기능식품 상품 명 어쩌구 저쩌궁',
+                          product.productName,
                           style: const TextStyle(
                             fontSize: yDefaultBigFontSize + 2,
                             fontWeight: FontWeight.bold,
@@ -202,9 +201,9 @@ class ItemCard extends StatelessWidget {
                               ),
                               child: const Icon(Icons.business),
                             ),
-                            const Text(
-                              '건강기능식품 회사 어쩌구 저쩌궁',
-                              style: TextStyle(
+                            Text(
+                              product.componyName,
+                              style: const TextStyle(
                                 fontSize: yDefaultBigFontSize,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black54,
