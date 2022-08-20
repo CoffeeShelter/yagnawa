@@ -12,6 +12,7 @@ import pandas as pd
 
 from werkzeug.utils import secure_filename
 
+from ServiceProvided import *
 
 app = Flask(__name__)
 
@@ -81,9 +82,12 @@ def getProducts(productName):
     nutrient.createCursor()
     result = nutrient.getProductsInfo(productName)
 
-    result = pd.DataFrame(result)
+    result = ServiceProvided.convertInformation(result)
 
+    """
+    result = pd.DataFrame(result)
     result = result.to_json(orient='records')
+    """
 
     response = app.response_class(
         response=result,
