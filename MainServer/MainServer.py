@@ -117,9 +117,12 @@ def getProduct(productID):
 
     # print(result)
 
+    """
     result = pd.DataFrame.from_dict([result])
-
     result = result.to_json(orient='columns')
+    """
+
+    result = ServiceProvided.convertInformation(data=result, only=True)
 
     response = app.response_class(
         response=result,
