@@ -23,12 +23,14 @@ class ServiceProvided:
             if dataFrame.loc[i] is None:
                 continue
             
+            productCode = dataFrame.loc[i]['LCNS_NO'],
             productName = dataFrame.loc[i]['PRDLST_NM'],
             componyName = dataFrame.loc[i]['BSSH_NM'],
             functionally = dataFrame.loc[i]['PRIMARY_FNCLTY'],
             contents = dataFrame.loc[i]['STDR_STND']
 
             product.setProduct(
+                productCode=productCode,
                 productName=productName,
                 componyName=componyName,
                 functionally=functionally,

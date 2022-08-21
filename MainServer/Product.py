@@ -9,12 +9,14 @@ class Product():
               'e291a5', 'e291a6', 'e291a7', 'e291a8', 'e291a9']
 
     def __init__(self):
+        self.productCode = ''
         self.productName = ''
         self.componyName = ''
         self.functionally = ''
         self.contents = ''
 
-    def setProduct(self, productName, componyName, functionally, contents):
+    def setProduct(self, productCode, productName, componyName, functionally, contents):
+        self.productCode = str(productCode[0])
         self.productName = str(productName[0])
         self.componyName = str(componyName[0])
         self.functionally = self.formattingFunctionally(str(functionally[0]))
