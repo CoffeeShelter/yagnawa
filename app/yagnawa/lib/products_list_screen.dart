@@ -139,7 +139,8 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      child: Container(
         margin: const EdgeInsets.only(
           left: 10.0,
           right: 10.0,
@@ -214,7 +215,12 @@ class ItemCard extends StatelessWidget {
               ),
             ),
           ],
-        ));
+        ),
+      ),
+      onTap: () {
+        print(product.productCode);
+      },
+    );
   }
 }
 
