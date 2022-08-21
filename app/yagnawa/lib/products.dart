@@ -6,10 +6,28 @@ late String productName;
 late String componyName;
 
 void main() {
-  getProduct();
+  getProducts();
 }
 
-Future<ProductList> getProduct({productName}) async {
+// 단일 상품 정보
+Future<Product> getProduct({productCode}) async {
+  http.Response response = await http.get(
+    Uri.encodeFull('http://localhost:5000/product/$productCode'),
+    headers: {
+      "Accept": "application/json",
+      "Origin": "http://localhost",
+    },
+  );
+
+  Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+
+  Product product = Product.fromJson(data);
+
+  return product;
+}
+
+// 상품 목록
+Future<ProductList> getProducts({productName}) async {
   http.Response response = await http.get(
     Uri.encodeFull('http://localhost:5000/products/$productName'),
     headers: {
@@ -19,7 +37,6 @@ Future<ProductList> getProduct({productName}) async {
   );
 
   List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
-  print('[data length]: ${data.length}');
   // Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
 
   ProductList productList = ProductList.fromJson(data);

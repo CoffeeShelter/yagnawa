@@ -12,16 +12,16 @@ class ProductInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? productName = Get.parameters['productName'];
+    String? productCode = Get.parameters['productCode'];
 
-    productName ??= '';
+    productCode ??= '';
 
     return MaterialApp(
       title: 'YagNaWa',
       home: Scaffold(
         appBar: yacnawaAppBar(),
         body: ProductInfoScreen(
-          productName: productName,
+          productCode: productCode,
         ),
       ),
     );
@@ -29,22 +29,20 @@ class ProductInfoPage extends StatelessWidget {
 }
 
 class ProductInfoScreen extends StatelessWidget {
-  String productName;
+  final String productCode;
 
-  ProductInfoScreen({
+  const ProductInfoScreen({
     Key? key,
-    required this.productName,
+    required this.productCode,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    print(productName);
-
     return FutureBuilder(
       future: getProduct(
-        productName: productName,
+        productCode: productCode,
       ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         // API 응답 기다리는 중

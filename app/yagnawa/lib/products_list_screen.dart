@@ -37,7 +37,7 @@ class ProductListScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return FutureBuilder(
-      future: getProduct(
+      future: getProducts(
         productName: productName,
       ),
       builder: (context, snapshot) {
