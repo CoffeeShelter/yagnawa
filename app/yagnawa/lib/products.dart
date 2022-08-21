@@ -49,12 +49,14 @@ class ProductList {
 }
 
 class Product {
+  String productCode; // 상품 코드
   String productName; // 상품 명
   String componyName; // 회사 명
   List<dynamic> functionality; // 기능성
   String contents; // 함량 정보
 
   Product({
+    required this.productCode,
     required this.productName,
     required this.componyName,
     required this.functionality,
@@ -63,6 +65,7 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
+      productCode: json['productCode'] ??= 'null',
       productName: json['productName'] ??= 'null',
       componyName: json['componyName'] ??= 'null',
       functionality: json['functionally'] ??= [],
