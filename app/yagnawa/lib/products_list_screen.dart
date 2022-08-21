@@ -218,7 +218,7 @@ class ItemCard extends StatelessWidget {
         ),
       ),
       onTap: () {
-        print(product.productCode);
+        Get.toNamed('/product?productCode=${product.productCode}');
       },
     );
   }
