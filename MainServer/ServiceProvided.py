@@ -11,6 +11,8 @@ class ServiceProvided:
 
     @staticmethod
     def convertInformation(data: tuple, only=False):
+        json_string = ''
+
         if only:
             dataFrame = pd.DataFrame([data])
 
@@ -18,7 +20,7 @@ class ServiceProvided:
 
             if dataFrame.loc[0] is None:
                 return ''
-            
+
             productCode = dataFrame.loc[0]['PRDLST_REPORT_NO'],
             productName = dataFrame.loc[0]['PRDLST_NM'],
             componyName = dataFrame.loc[0]['BSSH_NM'],
@@ -31,7 +33,7 @@ class ServiceProvided:
                 componyName=componyName,
                 functionally=functionally,
                 contents=contents,
-            );
+            )
 
             json_string = ServiceProvided.convertJsonData(product, only=only)
 
@@ -48,7 +50,7 @@ class ServiceProvided:
 
                 if dataFrame.loc[i] is None:
                     continue
-                
+
                 productCode = dataFrame.loc[i]['PRDLST_REPORT_NO'],
                 productName = dataFrame.loc[i]['PRDLST_NM'],
                 componyName = dataFrame.loc[i]['BSSH_NM'],
@@ -61,19 +63,19 @@ class ServiceProvided:
                     componyName=componyName,
                     functionally=functionally,
                     contents=contents,
-                );
+                )
 
                 productList.append(product)
 
-
-                json_string = ServiceProvided.convertJsonData(productList, only=only)
+            json_string = ServiceProvided.convertJsonData(
+                productList, only=only)
 
         return json_string
 
     @staticmethod
     def convertJsonData(data, only=False):
         json_string = ''
-        
+
         if only:
             json_string = json.dumps(
                 data.__dict__,
@@ -86,6 +88,7 @@ class ServiceProvided:
             )
 
         return json_string
+
 
 """
 if __name__ == "__main__":

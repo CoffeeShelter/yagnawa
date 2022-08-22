@@ -12,9 +12,9 @@ void main() {
 // 단일 상품 정보
 Future<Product> getProduct({productCode}) async {
   http.Response response = await http.get(
-    Uri.encodeFull('http://localhost:5000/product/$productCode'),
+    Uri.encodeFull('http://localhost:5000/product/${productCode}'),
     headers: {
-      "Accept": "application/json",
+      "Accept": "*/*",
       "Origin": "http://localhost",
     },
   );
@@ -27,26 +27,19 @@ Future<Product> getProduct({productCode}) async {
 }
 
 // 상품 목록
-Future<ProductList> getProducts({productName}) async {
+Future<ProductList?> getProducts({productName}) async {
   http.Response response = await http.get(
     Uri.encodeFull('http://localhost:5000/products/$productName'),
     headers: {
-      "Accept": "application/json",
+      "Accept": "*/*",
       "Origin": "http://localhost",
     },
   );
 
   List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
-  // Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
 
   ProductList productList = ProductList.fromJson(data);
-  // Product product = Product.fromJson(data);
 
-  print(productList.products[0].functionality);
-
-  // print(data.values);
-
-  // return product;
   return productList;
 }
 

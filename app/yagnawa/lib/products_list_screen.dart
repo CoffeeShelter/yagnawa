@@ -93,6 +93,21 @@ class ProductListScreen extends StatelessWidget {
             ),
           );
         } else {
+          ProductList productList = snapshot.data as ProductList;
+
+          if (productList.products.isEmpty) {
+            return Column(
+              children: <Widget>[
+                TopArea(size: size),
+                const Expanded(
+                  child: Center(
+                    child: Text('검색 결과 없음'),
+                  ),
+                ),
+              ],
+            );
+          }
+
           return Column(
             children: <Widget>[
               TopArea(size: size),
@@ -101,10 +116,8 @@ class ProductListScreen extends StatelessWidget {
                   color: yDefaultGrey,
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: 100,
+                    itemCount: productList.products.length,
                     itemBuilder: (BuildContext context, int index) {
-                      ProductList productList = snapshot.data as ProductList;
-
                       return ItemCard(
                         size: size,
                         colors: colors,
@@ -243,9 +256,11 @@ class TopArea extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
+          Container(
+            alignment: Alignment.topLeft,
             width: size.width * 0.3,
             child: IconButton(
+              visualDensity: VisualDensity.compact,
               alignment: Alignment.centerLeft,
               icon: const Icon(Icons.arrow_back_ios_rounded),
               onPressed: () {
@@ -266,9 +281,9 @@ class TopArea extends StatelessWidget {
             width: size.width * 0.3,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: const <Widget>[
-                IconButton(icon: Icon(Icons.camera), onPressed: null),
-                IconButton(icon: Icon(Icons.search), onPressed: null),
+              children: <Widget>[
+                IconButton(icon: const Icon(Icons.camera), onPressed: () {}),
+                IconButton(icon: const Icon(Icons.search), onPressed: () {}),
               ],
             ),
           )

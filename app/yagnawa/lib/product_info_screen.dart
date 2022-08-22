@@ -312,6 +312,8 @@ class ProductInfoScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // 함량 정보 게이지
+                              /*
                               Container(
                                 padding: const EdgeInsets.all(yDefaultPadding),
                                 child: SingleChildScrollView(
@@ -320,9 +322,10 @@ class ProductInfoScreen extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       Container(
-                                          margin: const EdgeInsets.only(
-                                              right: 10.0),
-                                          child: const Text('탄수화물')),
+                                        margin:
+                                            const EdgeInsets.only(right: 10.0),
+                                        child: const Text('탄수화물'),
+                                      ),
                                       SizedBox(
                                         width: size.width * 0.5,
                                         height: 10.0,
@@ -353,6 +356,7 @@ class ProductInfoScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              */
                               Text(
                                 snapshot.data.contents ??= 'null',
                                 style: const TextStyle(
