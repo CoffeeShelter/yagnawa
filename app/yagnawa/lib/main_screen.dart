@@ -1,6 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:yagnawa/image_editor.dart';
 import 'constants.dart';
 import 'package:get/get.dart';
+import 'camera.dart';
+
+enum Menu { gallery, camera }
 
 class MainScreen extends StatelessWidget {
   final myController = TextEditingController();
@@ -11,6 +18,8 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
@@ -48,30 +57,76 @@ class MainScreen extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: TextField(
-                controller: myController,
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  hintStyle: TextStyle(
-                    color: yDefaultGreen.withOpacity(0.5),
-                    fontSize: 18.0,
-                  ),
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.search_rounded),
-                    color: yDefaultGreen,
-                    iconSize: 22.0,
-                    onPressed: () {
-                      Get.toNamed('/products?productName=${myController.text}');
-                      myController.clear();
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  PopupMenuButton<Menu>(
+                    icon: const Icon(
+                      Icons.camera,
+                      color: yDefaultGreen,
+                      size: 22.0,
+                    ),
+                    onSelected: (Menu item) async {
+                      switch (item) {
+                        case Menu.gallery:
+                          PickedFile? pickedFile = await chooseImage();
+                          if (pickedFile != null) {
+                            File image = File(pickedFile.path);
+                            Get.to(() => ImageEditor(image: image));
+                          }
+                          break;
+                        case Menu.camera:
+                          PickedFile? pickedFile = await getImage();
+                          if (pickedFile != null) {
+                            File image = File(pickedFile.path);
+                            Get.to(() => ImageEditor(image: image));
+                          }
+                          break;
+                      }
                     },
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<Menu>>[
+                      const PopupMenuItem<Menu>(
+                        value: Menu.gallery,
+                        child: Text('이미지 가져오기'),
+                      ),
+                      const PopupMenuItem<Menu>(
+                        value: Menu.camera,
+                        child: Text('직접 촬영'),
+                      ),
+                    ],
                   ),
-                ),
-                onSubmitted: (value) {
-                  Get.toNamed('/products?productName=$value');
-                  myController.clear();
-                },
+                  SizedBox(
+                    width: size.width * 0.67,
+                    child: TextField(
+                      controller: myController,
+                      decoration: InputDecoration(
+                        hintText: 'Search',
+                        hintStyle: TextStyle(
+                          color: yDefaultGreen.withOpacity(0.5),
+                          fontSize: 18.0,
+                        ),
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.search_rounded),
+                          color: yDefaultGreen,
+                          iconSize: 22.0,
+                          onPressed: () {
+                            Get.toNamed(
+                                '/products?productName=${myController.text}');
+                            myController.clear();
+                          },
+                        ),
+                      ),
+                      onSubmitted: (value) {
+                        Get.toNamed('/products?productName=$value');
+                        myController.clear();
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             // 바로가기 버튼 프레임
@@ -192,5 +247,9 @@ child: ElevatedButton(
         },
       ),
     );
+
+ */
+
+/*
 
  */

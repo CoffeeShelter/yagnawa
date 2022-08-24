@@ -1,18 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-
-late String productName;
-late String componyName;
-
-void main() {
-  getProducts();
-}
 
 // 단일 상품 정보
 Future<Product> getProduct({productCode}) async {
   http.Response response = await http.get(
-    Uri.encodeFull('http://localhost:5000/product/${productCode}'),
+    Uri.parse('http://211.59.155.146:5000/product/$productCode'),
     headers: {
       "Accept": "*/*",
       "Origin": "http://localhost",
@@ -26,10 +22,69 @@ Future<Product> getProduct({productCode}) async {
   return product;
 }
 
+/*
+uploadImage(String productName, File file) async {
+  var request =
+      http.MultipartRequest("POST", Uri.parse("http://localhost:5000/image"));
+
+  request.fields['productName'] = productName;
+  request.headers['Origin'] = "http://localhost";
+
+  var picture = http.MultipartFile.fromBytes(
+    'files[]',
+    (await rootBundle.load('assets/images/product04.jpg')).buffer.asUint8List(),
+    filename: 'testimage.png',
+  );
+
+  request.files.add(picture);
+
+  var response = await request.send();
+
+  var responseData = await response.stream.toBytes();
+
+  var result = String.fromCharCodes(responseData);
+  Map<String, dynamic> data = jsonDecode(result);
+  print(data['mark']);
+ */
+
+// 단일 상품 정보 (사진)
+Future<Product> getProductWithImage({productName, required File image}) async {
+  var request = http.MultipartRequest(
+      "POST", Uri.parse("http://211.59.155.146:5000/image"));
+
+  request.fields['productName'] = productName;
+
+  request.headers['Accept'] = "*/*";
+  request.headers['Origin'] = "http://localhost";
+
+  Uint8List bytes = image.readAsBytesSync();
+
+  var picture = http.MultipartFile.fromBytes(
+    'files[]',
+    // (await rootBundle.load(image.path)).buffer.asUint8List(),
+    bytes,
+    filename: 'testimage.png',
+  );
+
+  request.files.add(picture);
+
+  var response = await request.send();
+
+  var responseData = await response.stream.toBytes();
+
+  var result = String.fromCharCodes(responseData);
+  Map<String, dynamic> data = jsonDecode(result);
+  print(data['mark']);
+
+  Product product = Product.fromJson(data);
+
+  return product;
+}
+
 // 상품 목록
 Future<ProductList?> getProducts({productName}) async {
   http.Response response = await http.get(
-    Uri.encodeFull('http://localhost:5000/products/$productName'),
+    Uri.parse('http://211.59.155.146:5000/products/$productName'),
     headers: {
       "Accept": "*/*",
       "Origin": "http://localhost",

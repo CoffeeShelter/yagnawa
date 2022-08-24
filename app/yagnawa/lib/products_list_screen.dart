@@ -188,7 +188,7 @@ class ItemCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    width: 330,
+                    width: size.width * 0.65,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
