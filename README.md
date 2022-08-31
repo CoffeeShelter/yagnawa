@@ -6,7 +6,7 @@
 
 <h3 align="center">약나와</h3>
 
-<p align="center" style="color: green;">
+<p align="center" style="color: green">
   이미지 기반 건강기능식품 분석 및 합리적인 구매 도움 서비스
   <br>
 </p>
