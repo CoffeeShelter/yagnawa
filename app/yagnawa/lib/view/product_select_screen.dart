@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yagnawa/products.dart';
-import 'constants.dart';
-import 'products.dart';
+import '../constants.dart';
+import '../products.dart';
 
-class ProductListPage extends StatelessWidget {
-  const ProductListPage({
+class ProductSelectPage extends StatelessWidget {
+  const ProductSelectPage({
     Key? key,
   }) : super(key: key);
 
@@ -18,7 +18,7 @@ class ProductListPage extends StatelessWidget {
     return MaterialApp(
       title: 'YagNaWa',
       home: Scaffold(
-        body: ProductListScreen(
+        body: ProductSelectScreen(
           productName: productName,
         ),
       ),
@@ -26,8 +26,8 @@ class ProductListPage extends StatelessWidget {
   }
 }
 
-class ProductListScreen extends StatelessWidget {
-  ProductListScreen({Key? key, required this.productName}) : super(key: key);
+class ProductSelectScreen extends StatelessWidget {
+  ProductSelectScreen({Key? key, required this.productName}) : super(key: key);
 
   final List<Color> colors = [yDefaultDarkGreen, yDefaultGreen];
   final String productName;
@@ -63,7 +63,9 @@ class ProductListScreen extends StatelessWidget {
               ],
             ),
           );
-        } else if (snapshot.hasError) {
+        }
+
+        if (snapshot.hasError) {
           print("에러");
           return Center(
             child: Column(
@@ -92,45 +94,45 @@ class ProductListScreen extends StatelessWidget {
               ],
             ),
           );
-        } else {
-          ProductList productList = snapshot.data as ProductList;
+        }
 
-          if (productList.products.isEmpty) {
-            return Column(
-              children: <Widget>[
-                TopArea(size: size),
-                const Expanded(
-                  child: Center(
-                    child: Text('검색 결과 없음'),
-                  ),
-                ),
-              ],
-            );
-          }
+        ProductList productList = snapshot.data as ProductList;
 
+        if (productList.products.isEmpty) {
           return Column(
             children: <Widget>[
               TopArea(size: size),
-              Expanded(
-                child: Container(
-                  color: yDefaultGrey,
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: productList.products.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ItemCard(
-                        size: size,
-                        colors: colors,
-                        index: index,
-                        product: productList.products[index],
-                      );
-                    },
-                  ),
+              const Expanded(
+                child: Center(
+                  child: Text('검색 결과 없음'),
                 ),
               ),
             ],
           );
         }
+
+        return Column(
+          children: <Widget>[
+            TopArea(size: size),
+            Expanded(
+              child: Container(
+                color: yDefaultGrey,
+                child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: productList.products.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ItemCard(
+                      size: size,
+                      colors: colors,
+                      index: index,
+                      product: productList.products[index],
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
       },
     );
   }

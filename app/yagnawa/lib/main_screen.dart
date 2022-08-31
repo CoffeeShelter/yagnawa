@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:yagnawa/image_editor.dart';
+import 'view/image_editor.dart';
 import 'constants.dart';
 import 'package:get/get.dart';
 import 'camera.dart';

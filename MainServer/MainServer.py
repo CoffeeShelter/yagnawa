@@ -174,8 +174,11 @@ def upload_file():
                 image_np, detection_graph)
             result_image = getResultImage(image_np, output_dict)
             result_image = result_image[0:width, 0:height]
-
-            marks = getClassName(output_dict)[0]
+            
+            if len(getClassName(output_dict)) > 0:
+                marks = getClassName(output_dict)[0]
+            else:
+                marks = []
             print({'mark': f'{marks}'})
         else:
             errors[file.filename] = 'File type is not allowed'

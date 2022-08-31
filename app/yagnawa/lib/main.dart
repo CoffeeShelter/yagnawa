@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yagnawa/product_info_screen.dart';
-import 'package:yagnawa/products_list_screen.dart';
+import 'view/product_info_screen.dart';
+import 'view/products_list_screen.dart';
 // import 'appbar.dart';
 import 'main_screen.dart';
 

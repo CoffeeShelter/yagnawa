@@ -37,7 +37,6 @@ dependencies:
   syncfusion_flutter_gauges: ^20.2.40
   get: ^4.6.5
   path:
-  camera:
 
   http: ^0.13.5
   image_picker: ^0.8.5+3
