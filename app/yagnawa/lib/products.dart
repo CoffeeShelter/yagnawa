@@ -4,10 +4,13 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
+// String URL = 'http://211.59.155.146:5000';
+String URL = 'http://localhost:5000';
+
 // 단일 상품 정보
 Future<Product> getProduct({productCode}) async {
   http.Response response = await http.get(
-    Uri.parse('http://211.59.155.146:5000/product/$productCode'),
+    Uri.parse('$URL/product/$productCode'),
     headers: {
       "Accept": "*/*",
       "Origin": "http://localhost",
@@ -21,35 +24,9 @@ Future<Product> getProduct({productCode}) async {
   return product;
 }
 
-/*
-uploadImage(String productName, File file) async {
-  var request =
-      http.MultipartRequest("POST", Uri.parse("http://localhost:5000/image"));
-
-  request.fields['productName'] = productName;
-  request.headers['Origin'] = "http://localhost";
-
-  var picture = http.MultipartFile.fromBytes(
-    'files[]',
-    (await rootBundle.load('assets/images/product04.jpg')).buffer.asUint8List(),
-    filename: 'testimage.png',
-  );
-
-  request.files.add(picture);
-
-  var response = await request.send();
-
-  var responseData = await response.stream.toBytes();
-
-  var result = String.fromCharCodes(responseData);
-  Map<String, dynamic> data = jsonDecode(result);
-  print(data['mark']);
- */
-
 // 단일 상품 정보 (사진)
 Future<Product> getProductWithImage({productName, required File image}) async {
-  var request = http.MultipartRequest(
-      "POST", Uri.parse("http://211.59.155.146:5000/image"));
+  var request = http.MultipartRequest("POST", Uri.parse("$URL/image"));
 
   request.fields['productName'] = productName;
 
@@ -83,7 +60,7 @@ Future<Product> getProductWithImage({productName, required File image}) async {
 // 상품 목록
 Future<ProductList?> getProducts({productName}) async {
   http.Response response = await http.get(
-    Uri.parse('http://211.59.155.146:5000/products/$productName'),
+    Uri.parse('$URL/products/$productName'),
     headers: {
       "Accept": "*/*",
       "Origin": "http://localhost",
