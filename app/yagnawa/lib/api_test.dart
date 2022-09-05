@@ -43,7 +43,7 @@ uploadImage(String productName, File file) async {
 
   var picture = http.MultipartFile.fromBytes(
     'files[]',
-    (await rootBundle.load('assets/images/product04.jpg')).buffer.asUint8List(),
+    (await rootBundle.load('assets/images/product03.jpg')).buffer.asUint8List(),
     filename: 'testimage.png',
   );
 

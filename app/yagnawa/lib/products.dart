@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 // String URL = 'http://211.59.155.146:5000';
@@ -34,6 +35,12 @@ Future<Product> getProductWithImage({productName, required File image}) async {
   request.headers['Origin'] = "http://localhost";
 
   Uint8List bytes = image.readAsBytesSync();
+
+  rootBundle.load('assets/product01.png').then(
+    (data) {
+      bytes = data.buffer.asUint8List();
+    },
+  );
 
   var picture = http.MultipartFile.fromBytes(
     'files[]',
