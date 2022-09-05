@@ -1,3 +1,5 @@
+from tkinter import W
+from tkinter.tix import MAX
 from flask import Flask, request, redirect, jsonify
 from flask_cors import CORS
 
@@ -35,6 +37,9 @@ PATH_TO_FROZEN_GRAPH = './certified_mark_model/output_inference_graph_v1/frozen_
 # List of the strings that is used to add correct label for each box.
 PATH_TO_LABELS = os.path.join(
     os.getcwd(), './certified_mark_model/label_map.pdtxt')
+
+# 이미지 최대 크기
+MAX_SIZE = 1400
 
 # ## Load a (frozen) Tensorflow model into memory.
 detection_graph = tf.Graph()
@@ -161,10 +166,19 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             success = True
 
-            image = Image.open(file)
+            image = Image.open(file).convert('RGB')
+
             image_np = load_image_into_numpy_array(image)
 
             width, height, channel = image_np.shape
+
+            # 가로,세로 1400 이하로 전처리
+            if width > 1400:
+                image_np = cv2.resize(
+                    image_np, (height, MAX_SIZE), interpolation=cv2.INTER_AREA)
+            if height > 1400:
+                image_np = cv2.resize(
+                    image_np, (MAX_SIZE, width), interpolation=cv2.INTER_AREA)
 
             # 입력 이미지 전처리 ( 해상도 변경 ( 1400 x 1400 ))
             image_np = input_image_to_white_matrix(image_np, 1400, 1400)
@@ -174,7 +188,7 @@ def upload_file():
                 image_np, detection_graph)
             result_image = getResultImage(image_np, output_dict)
             result_image = result_image[0:width, 0:height]
-            
+
             if len(getClassName(output_dict)) > 0:
                 marks = getClassName(output_dict)[0]
             else:
