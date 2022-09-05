@@ -190,7 +190,7 @@ def upload_file():
             result_image = result_image[0:width, 0:height]
 
             if len(getClassName(output_dict)) > 0:
-                marks = getClassName(output_dict)[0]
+                marks = getClassName(output_dict)
             else:
                 marks = []
             print({'mark': f'{marks}'})
