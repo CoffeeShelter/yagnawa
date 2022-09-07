@@ -50,6 +50,9 @@ with detection_graph.as_default():
         od_graph_def.ParseFromString(serialized_graph)
         tf.import_graph_def(od_graph_def, name='')
 
+nutrient = Nutrient()
+nutrient.connectDatabase()
+nutrient.createCursor()
 
 @app.route('/detection/mark', methods=['POST'])
 def detection_mark():
@@ -82,9 +85,6 @@ def detection_mark():
 
 @app.route('/products/<productName>', methods=['GET'])
 def getProducts(productName):
-    nutrient = Nutrient()
-    nutrient.connectDatabase()
-    nutrient.createCursor()
     result = nutrient.getProductsInfo(productName)
 
     result = ServiceProvided.convertInformation(result)
@@ -147,6 +147,9 @@ def allowed_file(filename):
 
 @app.route('/image', methods=['POST'])
 def upload_file():
+    marks = []
+    details = []
+
     # check if the post request has the file part
     if 'files[]' not in request.files:
         resp = jsonify({'message': 'No file part in the request'})
@@ -191,8 +194,7 @@ def upload_file():
 
             if len(getClassName(output_dict)) > 0:
                 marks = getClassName(output_dict)
-            else:
-                marks = []
+                
             print({'mark': f'{marks}'})
         else:
             errors[file.filename] = 'File type is not allowed'
@@ -202,8 +204,19 @@ def upload_file():
         resp = jsonify(errors)
         resp.status_code = 500
         return resp
-    if success:
-        resp = jsonify({'mark': f'{marks}'})
+    if success: 
+        result = nutrient.getProductsInfo(productName)
+        # result = ServiceProvided.convertInformation(data=result, only=True)
+        resp = jsonify(
+            {
+                'status': 'SUCCESS',
+                'result': {
+                    'mark': f'{marks}',
+                    'details': f'{details}',
+                    'products': f'{result}',
+                }
+            }
+        )
         resp.status_code = 201
         return resp
     else:

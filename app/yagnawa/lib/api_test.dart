@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
           child: Container(
             child: TextButton(
               onPressed: () {
-                uploadImage('비타민', File('assets/images/gmp.png'));
+                uploadImage('1000kcal', File('assets/images/gmp.png'));
               },
               child: Text('Upload'),
             ),
@@ -55,5 +55,6 @@ uploadImage(String productName, File file) async {
 
   var result = String.fromCharCodes(responseData);
   Map<String, dynamic> data = jsonDecode(result);
-  print(data['mark']);
+  print(data['result']['products']);
+  print(data['result']['products'].length);
 }
