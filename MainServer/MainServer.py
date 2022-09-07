@@ -54,6 +54,7 @@ nutrient = Nutrient()
 nutrient.connectDatabase()
 nutrient.createCursor()
 
+
 @app.route('/detection/mark', methods=['POST'])
 def detection_mark():
     data = request.get_json()
@@ -194,7 +195,7 @@ def upload_file():
 
             if len(getClassName(output_dict)) > 0:
                 marks = getClassName(output_dict)
-                
+
             print({'mark': f'{marks}'})
         else:
             errors[file.filename] = 'File type is not allowed'
@@ -204,19 +205,19 @@ def upload_file():
         resp = jsonify(errors)
         resp.status_code = 500
         return resp
-    if success: 
+    if success:
         result = nutrient.getProductsInfo(productName)
         # result = ServiceProvided.convertInformation(data=result, only=True)
-        resp = jsonify(
-            {
-                'status': 'SUCCESS',
-                'result': {
-                    'mark': f'{marks}',
-                    'details': f'{details}',
-                    'products': f'{result}',
-                }
-            }
-        )
+
+        respDict = dict()
+        respDict['status'] = 'SUCCESS'
+        respDict['result'] = {
+            'mark': marks,
+            'details': details,
+            'products': result,
+        }
+
+        resp = jsonify(respDict)
         resp.status_code = 201
         return resp
     else:
