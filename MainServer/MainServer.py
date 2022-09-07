@@ -207,7 +207,7 @@ def upload_file():
         return resp
     if success:
         result = nutrient.getProductsInfo(productName)
-        # result = ServiceProvided.convertInformation(data=result, only=True)
+        result = ServiceProvided.convertInformation(data=result, only=False)
 
         respDict = dict()
         respDict['status'] = 'SUCCESS'

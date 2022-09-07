@@ -37,6 +37,8 @@ class ServiceProvided:
 
             json_string = ServiceProvided.convertJsonData(product, only=only)
 
+            return product.__dict__
+
         else:
             dataFrame = pd.DataFrame(data)
 
@@ -65,12 +67,13 @@ class ServiceProvided:
                     contents=contents,
                 )
 
-                productList.append(product)
+                productList.append(product.__dict__)
 
-            json_string = ServiceProvided.convertJsonData(
+            """
+                json_string = ServiceProvided.convertJsonData(
                 productList, only=only)
-
-        return json_string
+            """
+            return productList
 
     @staticmethod
     def convertJsonData(data, only=False):
