@@ -41,6 +41,39 @@ class ProductListScreen extends StatelessWidget {
         productName: productName,
       ),
       builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            print("에러");
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    '제품 정보를 가져오지 못했습니다',
+                    style: TextStyle(
+                      fontSize: yDefaultFontSize,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                    height: 20,
+                  ),
+                  Text(
+                    '${snapshot.error}',
+                    style: const TextStyle(
+                      fontSize: yDefaultFontSize,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        }
+
         if (snapshot.hasData == false) {
           print('기다리는중');
           return Center(
@@ -58,37 +91,6 @@ class ProductListScreen extends StatelessWidget {
                     fontSize: yDefaultFontSize,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        if (snapshot.hasError) {
-          print("에러");
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  '제품 정보를 가져오지 못했습니다',
-                  style: TextStyle(
-                    fontSize: yDefaultFontSize,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                  height: 20,
-                ),
-                Text(
-                  '${snapshot.error}',
-                  style: const TextStyle(
-                    fontSize: yDefaultFontSize,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
                   ),
                 ),
               ],

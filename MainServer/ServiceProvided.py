@@ -48,6 +48,9 @@ class ServiceProvided:
                 return []
 
             for i in range(len(dataFrame)):
+                if i > 50:
+                    break
+
                 product = Product()
 
                 if dataFrame.loc[i] is None:
@@ -69,10 +72,6 @@ class ServiceProvided:
 
                 productList.append(product.__dict__)
 
-            """
-                json_string = ServiceProvided.convertJsonData(
-                productList, only=only)
-            """
             return productList
 
     @staticmethod

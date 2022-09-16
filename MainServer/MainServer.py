@@ -77,66 +77,58 @@ def detection_mark():
     return getClassName(output_dict)[0]
 
 
-"""
-요청 URL : /products/<상품명>
-요청 메서드 : GET
-반환 : 상품 목록
-"""
-
-
 @app.route('/products/<productName>', methods=['GET'])
 def getProducts(productName):
-    result = nutrient.getProductsInfo(productName)
+    """
+    건강기능식품 제품 목록 조회 함수
+    요청 URL : /products/<제품 명>
+    요청 메서드 : GET
 
+    Args:
+        productName (str): 제품 명
+
+    Return:
+        건강기능식품 제품 목록 Json형태로 반환
+
+    """
+    result = nutrient.getProductsInfo(productName)
     result = ServiceProvided.convertInformation(result)
 
-    """
-    result = pd.DataFrame(result)
-    result = result.to_json(orient='records')
-    """
-
-    response = app.response_class(
-        response=result,
-        mimetype='application/json',
-    )
+    response = jsonify(result)
 
     response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Content-Type'] = 'application/json'
+    response.headers['Content-Type'] = '*/*'
     response.headers['charset'] = 'utf-8'
+
+    response.status_code = 200
 
     return response
 
 
-"""
-요청 URL : /product/<상품 코드>
-요청 메서드 : GET
-반환 : 단일 상품
-"""
-
-
 @app.route('/product/<productID>', methods=['GET'])
 def getProduct(productID):
+    """
+    건강기능식품 제품 세부 정보 조회
+    요청 URL : /product/<제품 코드>
+    요청 메서드 : GET
+
+    Args:
+        productName (str): 제품 코드
+
+    Return:
+        건강기능식품 제품 세부 정보 Json형태로 반환
+    """
     nutrient = Nutrient()
     nutrient.connectDatabase()
     nutrient.createCursor()
+
     result = nutrient.getProductInfo(productID)
-
-    # print(result)
-
-    """
-    result = pd.DataFrame.from_dict([result])
-    result = result.to_json(orient='columns')
-    """
-
     result = ServiceProvided.convertInformation(data=result, only=True)
 
-    response = app.response_class(
-        response=result,
-        mimetype='application/json',
-    )
+    response = jsonify(result)
 
     response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Content-Type'] = 'application/json'
+    response.headers['Content-Type'] = '*/*'
     response.headers['charset'] = 'utf-8'
 
     return response
@@ -147,11 +139,18 @@ def allowed_file(filename):
 
 
 @app.route('/image', methods=['POST'])
-def upload_file():
+def getProductByImage():
+    """
+    건강기능식품 제품 세부 정보 조회
+    요청 URL : /image
+    요청 메서드 : POST
+
+    Return:
+        건강기능식품 제품 세부 정보 Json형태로 반환
+    """
     marks = []
     details = []
 
-    # check if the post request has the file part
     if 'files[]' not in request.files:
         resp = jsonify({'message': 'No file part in the request'})
         resp.status_code = 400
@@ -205,6 +204,7 @@ def upload_file():
         resp = jsonify(errors)
         resp.status_code = 500
         return resp
+
     if success:
         result = nutrient.getProductsInfo(productName)
         result = ServiceProvided.convertInformation(data=result, only=False)
