@@ -77,7 +77,8 @@ class ImageEditor extends StatelessWidget {
                             ProductList productList = ProductList.fromJson(
                                 value['result']['products']);
 
-                            print(productList.products[0].productName);
+                            print(
+                                'result: ${productList.products[0].productName}');
                           }).catchError((error) {
                             print(error);
                           });

@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-String URL = 'https://10.0.2.2:5000';
+String URL = 'http://10.0.2.2:5000';
 // String URL = 'http://211.59.155.207:5000';
 // String URL = 'http://localhost:5000';
 
@@ -39,15 +39,14 @@ Future<Map<String, dynamic>> getProductWithImage(
 
   Uint8List bytes = image.readAsBytesSync();
 
-  rootBundle.load('assets/product01.png').then(
-    (data) {
-      bytes = data.buffer.asUint8List();
-    },
-  );
+  // rootBundle.load('assets/product01.png').then(
+  //   (data) {
+  //     bytes = data.buffer.asUint8List();
+  //   },
+  // );
 
   var picture = http.MultipartFile.fromBytes(
     'files[]',
-    // (await rootBundle.load(image.path)).buffer.asUint8List(),
     bytes,
     filename: 'testimage.png',
   );
@@ -55,14 +54,10 @@ Future<Map<String, dynamic>> getProductWithImage(
   request.files.add(picture);
 
   var response = await request.send();
-
   var responseData = await response.stream.toBytes();
-
   var result = String.fromCharCodes(responseData);
-  Map<String, dynamic> data = jsonDecode(result);
-  print(data['mark']);
 
-  Product product = Product.fromJson(data);
+  Map<String, dynamic> data = jsonDecode(result);
 
   return data;
 }
