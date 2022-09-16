@@ -1,3 +1,5 @@
+from tkinter import W
+from tkinter.tix import MAX
 from flask import Flask, request, redirect, jsonify
 from flask_cors import CORS
 
@@ -36,6 +38,9 @@ PATH_TO_FROZEN_GRAPH = './certified_mark_model/output_inference_graph_v1/frozen_
 PATH_TO_LABELS = os.path.join(
     os.getcwd(), './certified_mark_model/label_map.pdtxt')
 
+# 이미지 최대 크기
+MAX_SIZE = 1400
+
 # ## Load a (frozen) Tensorflow model into memory.
 detection_graph = tf.Graph()
 with detection_graph.as_default():
@@ -44,6 +49,10 @@ with detection_graph.as_default():
         serialized_graph = fid.read()
         od_graph_def.ParseFromString(serialized_graph)
         tf.import_graph_def(od_graph_def, name='')
+
+nutrient = Nutrient()
+nutrient.connectDatabase()
+nutrient.createCursor()
 
 
 @app.route('/detection/mark', methods=['POST'])
@@ -68,69 +77,58 @@ def detection_mark():
     return getClassName(output_dict)[0]
 
 
-"""
-요청 URL : /products/<상품명>
-요청 메서드 : GET
-반환 : 상품 목록
-"""
-
-
 @app.route('/products/<productName>', methods=['GET'])
 def getProducts(productName):
-    nutrient = Nutrient()
-    nutrient.connectDatabase()
-    nutrient.createCursor()
-    result = nutrient.getProductsInfo(productName)
+    """
+    건강기능식품 제품 목록 조회 함수
+    요청 URL : /products/<제품 명>
+    요청 메서드 : GET
 
+    Args:
+        productName (str): 제품 명
+
+    Return:
+        건강기능식품 제품 목록 Json형태로 반환
+
+    """
+    result = nutrient.getProductsInfo(productName)
     result = ServiceProvided.convertInformation(result)
 
-    """
-    result = pd.DataFrame(result)
-    result = result.to_json(orient='records')
-    """
-
-    response = app.response_class(
-        response=result,
-        mimetype='application/json',
-    )
+    response = jsonify(result)
 
     response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Content-Type'] = 'application/json'
+    response.headers['Content-Type'] = '*/*'
     response.headers['charset'] = 'utf-8'
+
+    response.status_code = 200
 
     return response
 
 
-"""
-요청 URL : /product/<상품 코드>
-요청 메서드 : GET
-반환 : 단일 상품
-"""
-
-
 @app.route('/product/<productID>', methods=['GET'])
 def getProduct(productID):
+    """
+    건강기능식품 제품 세부 정보 조회
+    요청 URL : /product/<제품 코드>
+    요청 메서드 : GET
+
+    Args:
+        productName (str): 제품 코드
+
+    Return:
+        건강기능식품 제품 세부 정보 Json형태로 반환
+    """
     nutrient = Nutrient()
     nutrient.connectDatabase()
     nutrient.createCursor()
+
     result = nutrient.getProductInfo(productID)
-
-    # print(result)
-
-    """
-    result = pd.DataFrame.from_dict([result])
-    result = result.to_json(orient='columns')
-    """
-
     result = ServiceProvided.convertInformation(data=result, only=True)
 
-    response = app.response_class(
-        response=result,
-        mimetype='application/json',
-    )
+    response = jsonify(result)
 
     response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Content-Type'] = 'application/json'
+    response.headers['Content-Type'] = '*/*'
     response.headers['charset'] = 'utf-8'
 
     return response
@@ -141,8 +139,18 @@ def allowed_file(filename):
 
 
 @app.route('/image', methods=['POST'])
-def upload_file():
-    # check if the post request has the file part
+def getProductByImage():
+    """
+    건강기능식품 제품 세부 정보 조회
+    요청 URL : /image
+    요청 메서드 : POST
+
+    Return:
+        건강기능식품 제품 세부 정보 Json형태로 반환
+    """
+    marks = []
+    details = []
+
     if 'files[]' not in request.files:
         resp = jsonify({'message': 'No file part in the request'})
         resp.status_code = 400
@@ -161,10 +169,19 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             success = True
 
-            image = Image.open(file)
+            image = Image.open(file).convert('RGB')
+
             image_np = load_image_into_numpy_array(image)
 
             width, height, channel = image_np.shape
+
+            # 가로,세로 1400 이하로 전처리
+            if width > 1400:
+                image_np = cv2.resize(
+                    image_np, (height, MAX_SIZE), interpolation=cv2.INTER_AREA)
+            if height > 1400:
+                image_np = cv2.resize(
+                    image_np, (MAX_SIZE, width), interpolation=cv2.INTER_AREA)
 
             # 입력 이미지 전처리 ( 해상도 변경 ( 1400 x 1400 ))
             image_np = input_image_to_white_matrix(image_np, 1400, 1400)
@@ -174,11 +191,10 @@ def upload_file():
                 image_np, detection_graph)
             result_image = getResultImage(image_np, output_dict)
             result_image = result_image[0:width, 0:height]
-            
+
             if len(getClassName(output_dict)) > 0:
-                marks = getClassName(output_dict)[0]
-            else:
-                marks = []
+                marks = getClassName(output_dict)
+
             print({'mark': f'{marks}'})
         else:
             errors[file.filename] = 'File type is not allowed'
@@ -188,8 +204,20 @@ def upload_file():
         resp = jsonify(errors)
         resp.status_code = 500
         return resp
+
     if success:
-        resp = jsonify({'mark': f'{marks}'})
+        result = nutrient.getProductsInfo(productName)
+        result = ServiceProvided.convertInformation(data=result, only=False)
+
+        respDict = dict()
+        respDict['status'] = 'SUCCESS'
+        respDict['result'] = {
+            'mark': marks,
+            'details': details,
+            'products': result,
+        }
+
+        resp = jsonify(respDict)
         resp.status_code = 201
         return resp
     else:

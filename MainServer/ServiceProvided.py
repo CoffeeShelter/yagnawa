@@ -37,6 +37,8 @@ class ServiceProvided:
 
             json_string = ServiceProvided.convertJsonData(product, only=only)
 
+            return product.__dict__
+
         else:
             dataFrame = pd.DataFrame(data)
 
@@ -46,6 +48,9 @@ class ServiceProvided:
                 return []
 
             for i in range(len(dataFrame)):
+                if i > 50:
+                    break
+
                 product = Product()
 
                 if dataFrame.loc[i] is None:
@@ -65,12 +70,9 @@ class ServiceProvided:
                     contents=contents,
                 )
 
-                productList.append(product)
+                productList.append(product.__dict__)
 
-            json_string = ServiceProvided.convertJsonData(
-                productList, only=only)
-
-        return json_string
+            return productList
 
     @staticmethod
     def convertJsonData(data, only=False):

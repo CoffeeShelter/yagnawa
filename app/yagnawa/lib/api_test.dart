@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
+String URL = 'http://211.59.155.146:5000';
+// String URL = 'http://localhost:5000';
+
 void main() {
   runApp(const MyApp());
 }
@@ -35,15 +38,14 @@ class MyApp extends StatelessWidget {
 }
 
 uploadImage(String productName, File file) async {
-  var request =
-      http.MultipartRequest("POST", Uri.parse("http://localhost:5000/image"));
+  var request = http.MultipartRequest("POST", Uri.parse("$URL/image"));
 
   request.fields['productName'] = productName;
   request.headers['Origin'] = "http://localhost";
 
   var picture = http.MultipartFile.fromBytes(
     'files[]',
-    (await rootBundle.load('assets/images/product04.jpg')).buffer.asUint8List(),
+    (await rootBundle.load('assets/images/product03.jpg')).buffer.asUint8List(),
     filename: 'testimage.png',
   );
 
@@ -55,5 +57,6 @@ uploadImage(String productName, File file) async {
 
   var result = String.fromCharCodes(responseData);
   Map<String, dynamic> data = jsonDecode(result);
-  print(data['mark']);
+  print(data['result']['products']);
+  print(data['result']['products'].length);
 }
