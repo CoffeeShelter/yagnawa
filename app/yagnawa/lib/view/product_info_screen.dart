@@ -45,33 +45,8 @@ class ProductInfoScreen extends StatelessWidget {
         productCode: productCode,
       ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        // API 응답 기다리는 중
-        if (snapshot.hasData == false) {
-          print('기다리는중');
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                CircularProgressIndicator(),
-                SizedBox(
-                  width: 20,
-                  height: 20,
-                ),
-                Text(
-                  '제품 정보를 가져오는 중 입니다',
-                  style: TextStyle(
-                    fontSize: yDefaultFontSize,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
         // error
-        else if (snapshot.hasError) {
+        if (snapshot.hasError) {
           print("에러");
           return Center(
             child: Column(
@@ -95,6 +70,31 @@ class ProductInfoScreen extends StatelessWidget {
                     fontSize: yDefaultFontSize,
                     fontWeight: FontWeight.bold,
                     color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // API 응답 기다리는 중
+        if (snapshot.hasData == false) {
+          print('기다리는중');
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const <Widget>[
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                ),
+                Text(
+                  '제품 정보를 가져오는 중 입니다',
+                  style: TextStyle(
+                    fontSize: yDefaultFontSize,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
               ],
