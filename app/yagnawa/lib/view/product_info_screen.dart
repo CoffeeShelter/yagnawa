@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:yagnawa/constants.dart';
 import 'package:yagnawa/products.dart';
 import '../appbar.dart';
