@@ -19,6 +19,7 @@ class ImageEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Image Edit Test',
       home: ImageCanvas(),
     );
@@ -35,6 +36,8 @@ class ImageCanvas extends StatefulWidget {
 class _ImageCanvasState extends State<ImageCanvas> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('이미지 에디터 테스트'),
@@ -94,7 +97,12 @@ class MyCanvas extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     var offset = Offset(size.width / 2, size.height / 2);
 
-    print('start $startDx , $startDy end $endDx , $endDy');
+    print('width: ${size.width} , height: ${size.height}');
+    print(
+        'start $startDx (${(startDx / size.width) * 100}%), $startDy (${(startDy / size.height) * 100}%) end $endDx (${(endDx / size.width) * 100}%) , $endDy (${(endDy / size.height) * 100}%)');
+
+    print(
+        '[result] startX: ${600 * (startDx / size.width)}, startY: ${600 * (startDy / size.height)}, endX: ${600 * (endDx / size.width)}, endY: ${600 * (endDy / size.height)}');
 
     drawRectangle(canvas, offset);
   }
