@@ -73,7 +73,8 @@ class MainScreen extends StatelessWidget {
                           PickedFile? pickedFile = await chooseImage();
                           if (pickedFile != null) {
                             File image = File(pickedFile.path);
-                            Get.to(() => ImageEditor(image: image));
+                            // Get.to(() => ImageEditor(image: image));
+                            Get.to(() => const ImageEditorCanvas());
                           }
                           break;
                         case Menu.camera:
@@ -227,29 +228,3 @@ class QuickButton extends StatelessWidget {
     );
   }
 }
-
-/*
-child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith(
-            (states) {
-              if (states.contains(MaterialState.pressed)) {
-                return Colors.green;
-              } else {
-                return yDefaultDarkGreen;
-              }
-            },
-          ),
-        ),
-        child: const Text('Go'),
-        onPressed: () {
-          Get.toNamed('/products?productName=비타민');
-        },
-      ),
-    );
-
- */
-
-/*
-
- */

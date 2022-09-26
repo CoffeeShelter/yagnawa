@@ -77,7 +77,8 @@ class ImageEditor extends StatelessWidget {
                             ProductList productList = ProductList.fromJson(
                                 value['result']['products']);
 
-                            print(productList.products[0].productName);
+                            print(
+                                'result: ${productList.products[0].productName}');
                           }).catchError((error) {
                             print(error);
                           });
@@ -93,5 +94,53 @@ class ImageEditor extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ImageEditorCanvas extends StatefulWidget {
+  const ImageEditorCanvas({Key? key}) : super(key: key);
+
+  @override
+  State<ImageEditorCanvas> createState() => _ImageEditorCanvasState();
+}
+
+class _ImageEditorCanvasState extends State<ImageEditorCanvas> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: CustomPaint(
+          child: Container(),
+          painter: MyCanvas(),
+        ),
+      ),
+    );
+  }
+}
+
+class MyCanvas extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var offset = Offset(size.width / 2, size.height / 2);
+
+    print(offset);
+
+    drawRectangle(canvas, offset);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    throw true;
+  }
+
+  var W = 600.0;
+  void drawRectangle(Canvas canvas, Offset offset) {
+    var rect = Rect.fromCenter(center: offset, width: W, height: W);
+    var border = Paint()
+      ..color = Colors.blue
+      ..strokeWidth = 10.0
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawRect(rect, border);
   }
 }
