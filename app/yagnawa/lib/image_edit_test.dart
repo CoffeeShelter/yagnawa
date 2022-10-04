@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:yagnawa/products.dart';
 
 var W = 100.0;
 var startDx = 0.0;
@@ -8,26 +12,39 @@ var endDy = 0.0;
 bool isClick = false;
 
 var image = const AssetImage('assets/images/product01.jpg');
+Image img = const Image(
+  image: AssetImage('assets/images/product01.jpg'),
+);
 
+/*
 void main() {
   runApp(const ImageEditor());
 }
-
+*/
 class ImageEditor extends StatelessWidget {
-  const ImageEditor({Key? key}) : super(key: key);
+  final File image;
+
+  const ImageEditor({
+    Key? key,
+    required this.image,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Image Edit Test',
-      home: ImageCanvas(),
+      home: ImageCanvas(image: image),
     );
   }
 }
 
 class ImageCanvas extends StatefulWidget {
-  const ImageCanvas({Key? key}) : super(key: key);
+  final File image;
+  const ImageCanvas({
+    Key? key,
+    required this.image,
+  }) : super(key: key);
 
   @override
   State<ImageCanvas> createState() => _ImageCanvasState();
@@ -42,52 +59,116 @@ class _ImageCanvasState extends State<ImageCanvas> {
       appBar: AppBar(
         title: const Text('이미지 에디터 테스트'),
       ),
-      body: GestureDetector(
-        child: CustomPaint(
-          // painter: MyCanvas(),
-          foregroundPainter: MyCanvas(),
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                fit: BoxFit.contain,
-                image: image,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              child: ImageDrawing(),
+            ),
+            Container(
+              margin: const EdgeInsets.only(
+                top: 30.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  BackButton(size),
+                  SendButton(size),
+                ],
               ),
             ),
-          ),
+          ],
         ),
-        onHorizontalDragDown: (details) {
-          setState(
-            () {
-              isClick = true;
+      ),
+    );
+  }
 
-              startDx = 0.0;
-              startDy = 0.0;
-              endDx = 0.0;
-              endDy = 0.0;
+  Container SendButton(Size size) {
+    return Container(
+      margin: const EdgeInsets.only(
+        top: 10,
+        bottom: 10,
+      ),
+      width: size.width * 0.3,
+      child: IconButton(
+        tooltip: '전송하기',
+        icon: const Icon(Icons.arrow_forward_rounded),
+        onPressed: () {
+          Future<Map<String, dynamic>> future;
+          future = getProductWithImage(
+            productName: '비타민',
+            image: widget.image,
+          );
 
-              startDx = details.localPosition.dx;
-              startDy = details.localPosition.dy;
-              endDx = details.localPosition.dx;
-              endDy = details.localPosition.dy;
-            },
-          );
-        },
-        onHorizontalDragEnd: (details) {
-          setState(
-            () {
-              isClick = false;
-            },
-          );
-        },
-        onHorizontalDragUpdate: (details) {
-          if (isClick) {
-            setState(() {
-              endDx = details.localPosition.dx;
-              endDy = details.localPosition.dy;
-            });
-          }
+          future.then((value) {
+            ProductList productList =
+                ProductList.fromJson(value['result']['products']);
+
+            print('result: ${productList.products[0].productName}');
+          }).catchError((error) {
+            print(error);
+          });
+          //Get.toNamed('/products?productName=$value');
         },
       ),
+    );
+  }
+
+  Container BackButton(Size size) {
+    return Container(
+      margin: const EdgeInsets.only(
+        top: 10,
+        bottom: 10,
+      ),
+      width: size.width * 0.3,
+      child: IconButton(
+        tooltip: '뒤로가기',
+        icon: const Icon(Icons.arrow_back_rounded),
+        onPressed: () {
+          Get.back();
+        },
+      ),
+    );
+  }
+
+  GestureDetector ImageDrawing() {
+    return GestureDetector(
+      child: CustomPaint(
+        foregroundPainter: MyCanvas(),
+        child: img,
+      ),
+      onHorizontalDragDown: (details) {
+        setState(
+          () {
+            isClick = true;
+
+            startDx = 0.0;
+            startDy = 0.0;
+            endDx = 0.0;
+            endDy = 0.0;
+
+            startDx = details.localPosition.dx;
+            startDy = details.localPosition.dy;
+            endDx = details.localPosition.dx;
+            endDy = details.localPosition.dy;
+          },
+        );
+      },
+      onHorizontalDragEnd: (details) {
+        setState(
+          () {
+            isClick = false;
+          },
+        );
+      },
+      onHorizontalDragUpdate: (details) {
+        if (isClick) {
+          setState(() {
+            endDx = details.localPosition.dx;
+            endDy = details.localPosition.dy;
+          });
+        }
+      },
     );
   }
 }

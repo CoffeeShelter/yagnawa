@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yagnawa/products.dart';
-import '../constants.dart';
 
 class ImageEditor extends StatelessWidget {
   final File image;

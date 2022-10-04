@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'view/image_editor.dart';
+// import 'view/image_editor.dart';
 import 'constants.dart';
 import 'package:get/get.dart';
 import 'camera.dart';
+import 'image_edit_test.dart';
 
 enum Menu { gallery, camera }
 
@@ -74,14 +75,15 @@ class MainScreen extends StatelessWidget {
                           if (pickedFile != null) {
                             File image = File(pickedFile.path);
                             // Get.to(() => ImageEditor(image: image));
-                            Get.to(() => const ImageEditorCanvas());
+                            // Get.to(() => const ImageEditorCanvas());
+                            Get.to(() => ImageEditor(image: image));
                           }
                           break;
                         case Menu.camera:
                           PickedFile? pickedFile = await getImage();
                           if (pickedFile != null) {
                             File image = File(pickedFile.path);
-                            Get.to(() => ImageEditor(image: image));
+                            // Get.to(() => ImageEditor(image: image));
                           }
                           break;
                       }
