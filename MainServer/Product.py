@@ -52,6 +52,10 @@ class Product():
                     if debug:
                         print(f"[{sampleString}]은 [{functionally}] 에 없습니다.")
 
+        for v in temp:
+            if len(v) < 1:
+                temp.remove(v)
+
         return temp
 
     def formattingContents(self, contents):
