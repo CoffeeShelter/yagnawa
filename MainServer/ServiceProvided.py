@@ -48,7 +48,7 @@ class ServiceProvided:
                 return []
 
             for i in range(len(dataFrame)):
-                if i > 50:
+                if i > 10:
                     break
 
                 product = Product()

@@ -81,6 +81,31 @@ Future<ProductList?> getProducts({productName}) async {
   return productList;
 }
 
+uploadImage(String productName, String filePath) async {
+  var request = http.MultipartRequest("POST", Uri.parse("$URL/image"));
+
+  request.fields['productName'] = productName;
+  request.headers['Origin'] = "http://localhost";
+
+  var picture = http.MultipartFile.fromBytes(
+    'files[]',
+    // (await rootBundle.load('assets/images/product03.jpg')).buffer.asUint8List(),
+    await File(filePath).readAsBytes(),
+    filename: 'testimage.png',
+  );
+
+  request.files.add(picture);
+
+  var response = await request.send();
+
+  var responseData = await response.stream.toBytes();
+
+  var result = String.fromCharCodes(responseData);
+  Map<String, dynamic> data = jsonDecode(result);
+  print(data['result']['products']);
+  print(data['result']['products'].length);
+}
+
 class ProductList {
   List<Product> products;
 

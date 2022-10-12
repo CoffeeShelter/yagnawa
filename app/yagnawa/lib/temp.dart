@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:yagnawa/appbar.dart';
 
 import 'dart:ui' as ui;
-
-import 'package:yagnawa/products.dart';
 
 void main() {
   runApp(
@@ -68,8 +64,8 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
   }
 
   Future loadImage(String path) async {
-    File data = File(path);
-    final bytes = await data.readAsBytes();
+    final data = await rootBundle.load(path);
+    final bytes = data.buffer.asUint8List();
     final image = await decodeImageFromList(bytes);
 
     setState(() => this.image = image);
@@ -95,7 +91,7 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
                       child: GestureDetector(
                         child: CustomPaint(
                           painter: ImagePainter(image!),
-                          foregroundPainter: RectPainter(),
+                          foregroundPainter: RectPainter(size),
                         ),
                         onHorizontalDragDown: (details) {
                           setState(
@@ -165,7 +161,6 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
         icon: const Icon(Icons.arrow_forward_rounded),
         onPressed: () {
           //Get.toNamed('/products?productName=$value');
-          uploadImage('비타민', widget.imageFilePath);
         },
       ),
     );
@@ -204,7 +199,11 @@ class ImagePainter extends CustomPainter {
 }
 
 class RectPainter extends CustomPainter {
-  const RectPainter();
+  final Size screenSize;
+
+  const RectPainter(
+    this.screenSize,
+  );
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -215,20 +214,20 @@ class RectPainter extends CustomPainter {
       ..strokeWidth = 5.0
       ..style = PaintingStyle.stroke;
 
-    print('width: ${size.width} , height: ${size.height}');
-    print('''
-      startDx $startDx , startDy $startDy
-      endDx $endDx , endDy $endDy
-      ''');
-    print('''
-      start $startDx (${(startDx / size.width) * 100}%) , $startDy (${(startDy / size.height) * 100}%)
-      end $endDx (${(endDx / size.width) * 100}%) , $endDy (${(endDy / size.height) * 100}%)
-      ''');
+    // print('width: ${size.width} , height: ${size.height}');
+    // print('''
+    //   startDx $startDx , startDy $startDy
+    //   endDx $endDx , endDy $endDy
+    //   ''');
+    // print('''
+    //   start $startDx (${(startDx / size.width) * 100}%) , $startDy (${(startDy / size.height) * 100}%)
+    //   end $endDx (${(endDx / size.width) * 100}%) , $endDy (${(endDy / size.height) * 100}%)
+    //   ''');
 
-    print(
-        '[result] startX: ${600 * (startDx / size.width)}, startY: ${600 * (startDy / size.height)}, endX: ${600 * (endDx / size.width)}, endY: ${600 * (endDy / size.height)}');
+    // print(
+    //     '[result] startX: ${600 * (startDx / size.width)}, startY: ${600 * (startDy / size.height)}, endX: ${600 * (endDx / size.width)}, endY: ${600 * (endDy / size.height)}');
 
-    print('=================================');
+    // print('=================================');
 
     canvas.drawRect(rect, border);
   }

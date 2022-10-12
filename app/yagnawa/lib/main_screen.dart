@@ -73,17 +73,15 @@ class MainScreen extends StatelessWidget {
                         case Menu.gallery:
                           PickedFile? pickedFile = await chooseImage();
                           if (pickedFile != null) {
-                            File image = File(pickedFile.path);
-                            // Get.to(() => ImageEditor(image: image));
-                            // Get.to(() => const ImageEditorCanvas());
-                            Get.to(() => ImageEditor(image: image));
+                            Get.to(() =>
+                                ImageEditor(imageFilePath: pickedFile.path));
                           }
                           break;
                         case Menu.camera:
                           PickedFile? pickedFile = await getImage();
                           if (pickedFile != null) {
-                            File image = File(pickedFile.path);
-                            // Get.to(() => ImageEditor(image: image));
+                            Get.to(() =>
+                                ImageEditor(imageFilePath: pickedFile.path));
                           }
                           break;
                       }
