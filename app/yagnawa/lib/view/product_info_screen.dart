@@ -219,10 +219,11 @@ class ProductInfoScreen extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        SizedBox(
-                          height: size.height *
-                              0.05 *
-                              snapshot.data.functionality.length,
+                        Container(
+                          height: yDefaultFontSize *
+                              snapshot.data.functionality.length *
+                              1.5,
+                          color: Colors.blue,
                           child: ListView.builder(
                             itemCount: snapshot.data.functionality.length,
                             itemBuilder: (context, index) {

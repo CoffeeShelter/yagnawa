@@ -22,6 +22,8 @@ class Product():
         self.functionally = self.formattingFunctionally(str(functionally[0]))
         self.contents = str(contents)
 
+        self.formattingContents(str(contents))
+
         # print(f'[str(functionally[0])]: {str(functionally[0])}')
 
     def formattingFunctionally(self, functionally, debug=False):
@@ -59,7 +61,12 @@ class Product():
         return temp
 
     def formattingContents(self, contents):
-        pass
+        temp = []
+
+        if '\n' in contents:
+            temp = contents.split('\n')
+
+        print(temp)
 
 
 """
