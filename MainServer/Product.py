@@ -20,11 +20,8 @@ class Product():
         self.productName = str(productName[0])
         self.componyName = str(componyName[0])
         self.functionally = self.formattingFunctionally(str(functionally[0]))
-        self.contents = str(contents)
-
-        self.formattingContents(str(contents))
-
-        # print(f'[str(functionally[0])]: {str(functionally[0])}')
+        self.contents = self.formattingContents(str(contents))
+        # self.contents = str(contents)
 
     def formattingFunctionally(self, functionally, debug=False):
         temp = []
@@ -66,7 +63,7 @@ class Product():
         if '\n' in contents:
             temp = contents.split('\n')
 
-        print(temp)
+        return temp
 
 
 """

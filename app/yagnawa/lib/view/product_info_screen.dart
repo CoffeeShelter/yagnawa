@@ -312,59 +312,35 @@ class ProductInfoScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              // 함량 정보 게이지
-                              /*
                               Container(
-                                padding: const EdgeInsets.all(yDefaultPadding),
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Container(
-                                        margin:
-                                            const EdgeInsets.only(right: 10.0),
-                                        child: const Text('탄수화물'),
+                                height: yDefaultFontSize *
+                                    snapshot.data.contents.length *
+                                    1.6,
+                                child: ListView.builder(
+                                  itemCount: snapshot.data.contents.length,
+                                  itemBuilder: (context, index) {
+                                    String content =
+                                        snapshot.data.contents[index];
+                                    if (content == Null) {}
+                                    return Text(
+                                      snapshot.data.contents[index] ??= 'null',
+                                      style: const TextStyle(
+                                        fontSize: yDefaultFontSize,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
                                       ),
-                                      SizedBox(
-                                        width: size.width * 0.5,
-                                        height: 10.0,
-                                        child: SfLinearGauge(
-                                          showAxisTrack: false,
-                                          showLabels: false,
-                                          showTicks: false,
-                                          ranges: const <LinearGaugeRange>[
-                                            LinearGaugeRange(
-                                              color: Colors.green,
-                                              startValue: 0,
-                                              endValue: 100,
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin:
-                                            const EdgeInsets.only(left: 10.0),
-                                        child: Column(
-                                          children: const <Widget>[
-                                            Text('비타민'),
-                                            Text('1,00000%'),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
-                              ),
-                              */
-                              Text(
-                                snapshot.data.contents ??= 'null',
-                                style: const TextStyle(
-                                  fontSize: yDefaultFontSize,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
+                              )
+                              // Text(
+                              //   snapshot.data.contents ??= 'null',
+                              //   style: const TextStyle(
+                              //     fontSize: yDefaultFontSize,
+                              //     fontWeight: FontWeight.bold,
+                              //     color: Colors.black,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
