@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:yagnawa/appbar.dart';
 
 import 'dart:ui' as ui;
@@ -20,6 +19,7 @@ var startDx = 0.0;
 var startDy = 0.0;
 var endDx = 0.0;
 var endDy = 0.0;
+
 bool isClick = false;
 
 class ImageEditor extends StatelessWidget {
@@ -69,7 +69,9 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
 
   Future loadImage(String path) async {
     File data = File(path);
+
     final bytes = await data.readAsBytes();
+
     final image = await decodeImageFromList(bytes);
 
     setState(() => this.image = image);
@@ -165,7 +167,10 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
         icon: const Icon(Icons.arrow_forward_rounded),
         onPressed: () {
           //Get.toNamed('/products?productName=$value');
-          uploadImage('비타민', widget.imageFilePath);
+          // [startDx, startDy, endDx, endDy]
+          var boundingBoxVertex = [startDx, startDy, endDx, endDy];
+          print(boundingBoxVertex);
+          uploadImage('비타민', widget.imageFilePath, boundingBoxVertex);
         },
       ),
     );
@@ -215,20 +220,21 @@ class RectPainter extends CustomPainter {
       ..strokeWidth = 5.0
       ..style = PaintingStyle.stroke;
 
-    print('width: ${size.width} , height: ${size.height}');
-    print('''
-      startDx $startDx , startDy $startDy
-      endDx $endDx , endDy $endDy
-      ''');
-    print('''
-      start $startDx (${(startDx / size.width) * 100}%) , $startDy (${(startDy / size.height) * 100}%)
-      end $endDx (${(endDx / size.width) * 100}%) , $endDy (${(endDy / size.height) * 100}%)
-      ''');
+    // print('width: ${size.width} , height: ${size.height}');
 
-    print(
-        '[result] startX: ${600 * (startDx / size.width)}, startY: ${600 * (startDy / size.height)}, endX: ${600 * (endDx / size.width)}, endY: ${600 * (endDy / size.height)}');
+    // print('''
+    //   startDx $startDx , startDy $startDy
+    //   endDx $endDx , endDy $endDy
+    //   ''');
+    // print('''
+    //   start $startDx (${(startDx / size.width) * 100}%) , $startDy (${(startDy / size.height) * 100}%)
+    //   end $endDx (${(endDx / size.width) * 100}%) , $endDy (${(endDy / size.height) * 100}%)
+    //   ''');
 
-    print('=================================');
+    // print(
+    //     '[result] startX: ${600 * (startDx / size.width)}, startY: ${600 * (startDy / size.height)}, endX: ${600 * (endDx / size.width)}, endY: ${600 * (endDy / size.height)}');
+
+    // print('=================================');
 
     canvas.drawRect(rect, border);
   }

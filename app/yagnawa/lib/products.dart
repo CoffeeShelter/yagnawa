@@ -81,10 +81,15 @@ Future<ProductList?> getProducts({productName}) async {
   return productList;
 }
 
-uploadImage(String productName, String filePath) async {
+uploadImage(String productName, String filePath, List boundingBoxVertex) async {
   var request = http.MultipartRequest("POST", Uri.parse("$URL/image"));
 
   request.fields['productName'] = productName;
+  request.fields['startDx'] = boundingBoxVertex[0].toString();
+  request.fields['startDy'] = boundingBoxVertex[1].toString();
+  request.fields['endDx'] = boundingBoxVertex[2].toString();
+  request.fields['endDy'] = boundingBoxVertex[3].toString();
+
   request.headers['Origin'] = "http://localhost";
 
   var picture = http.MultipartFile.fromBytes(
@@ -102,8 +107,8 @@ uploadImage(String productName, String filePath) async {
 
   var result = String.fromCharCodes(responseData);
   Map<String, dynamic> data = jsonDecode(result);
-  print(data['result']['products']);
-  print(data['result']['products'].length);
+//  print(data['result']['products']);
+//  print(data['result']['products'].length);
 }
 
 class ProductList {

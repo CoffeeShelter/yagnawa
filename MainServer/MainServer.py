@@ -1,6 +1,4 @@
-from tkinter import W
-from tkinter.tix import MAX
-from flask import Flask, request, redirect, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 from nutrient import Nutrient
@@ -10,11 +8,12 @@ import os
 import io
 import tensorflow as tf
 from PIL import Image
-import pandas as pd
 
 from werkzeug.utils import secure_filename
 
 from ServiceProvided import *
+
+import image_process
 
 app = Flask(__name__)
 
@@ -158,7 +157,11 @@ def getProductByImage():
 
     files = request.files.getlist('files[]')
     productName = request.form.get('productName')
-    print(productName)
+    startDx = float(request.form.get('startDx'))
+    startDy = float(request.form.get('startDy'))
+    endDx = float(request.form.get('endDx'))
+    endDy = float(request.form.get('endDy'))
+    print(endDy)
 
     errors = {}
     success = False
@@ -198,6 +201,15 @@ def getProductByImage():
             print({'mark': f'{marks}'})
         else:
             errors[file.filename] = 'File type is not allowed'
+
+    # TEST
+    productName = image_process.roi(
+        img=image_np,
+        startDx=startDx,
+        startDy=startDy,
+        endDx=endDx,
+        endDy=endDy
+    )
 
     if success and errors:
         errors['message'] = 'File(s) successfully uploaded'
