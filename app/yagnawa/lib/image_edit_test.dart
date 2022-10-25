@@ -1,11 +1,34 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image/image.dart';
 import 'package:yagnawa/appbar.dart';
 
 import 'dart:ui' as ui;
 
 import 'package:yagnawa/products.dart';
+import 'package:flutter/services.dart';
+import 'package:yagnawa/view/product_select_screen.dart';
+
+var startDx = 0.0;
+var startDy = 0.0;
+var endDx = 0.0;
+var endDy = 0.0;
+
+bool isClick = false;
+var uintImage;
+
+Future loading() async {
+  var data = (await rootBundle.load('assets/images/product03.jpg'))
+      .buffer
+      .asUint8List();
+
+  var image = await decodeImageFromList(data);
+  uintImage = data;
+
+  return image;
+}
 
 void main() {
   runApp(
@@ -14,13 +37,6 @@ void main() {
     ),
   );
 }
-
-var startDx = 0.0;
-var startDy = 0.0;
-var endDx = 0.0;
-var endDy = 0.0;
-
-bool isClick = false;
 
 class ImageEditor extends StatelessWidget {
   final String imageFilePath;
@@ -74,7 +90,10 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
 
     final image = await decodeImageFromList(bytes);
 
-    setState(() => this.image = image);
+    final tempImage = await loading();
+
+    setState(() => this.image = tempImage);
+    // setState(() => this.image = image);
   }
 
   @override
@@ -170,7 +189,15 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
           // [startDx, startDy, endDx, endDy]
           var boundingBoxVertex = [startDx, startDy, endDx, endDy];
           print(boundingBoxVertex);
-          uploadImage('비타민', widget.imageFilePath, boundingBoxVertex);
+          uploadImage('비타민', uintImage, boundingBoxVertex).then(
+            (value) {
+              Get.to(
+                () => ProductSelectPage(
+                  data: value,
+                ),
+              );
+            },
+          );
         },
       ),
     );

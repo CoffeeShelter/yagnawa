@@ -11,6 +11,9 @@ def roi(img, startDx, startDy, endDx, endDy):
 
     output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
 
+    cv2.imwrite('uploads/result.jpg', output)
+
     resultText = pytesseract.image_to_string(output)
+    print(f'[OCR 결과]: {resultText}')
     
     return resultText

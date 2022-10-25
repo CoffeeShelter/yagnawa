@@ -157,11 +157,6 @@ def getProductByImage():
 
     files = request.files.getlist('files[]')
     productName = request.form.get('productName')
-    startDx = float(request.form.get('startDx'))
-    startDy = float(request.form.get('startDy'))
-    endDx = float(request.form.get('endDx'))
-    endDy = float(request.form.get('endDy'))
-    print(endDy)
 
     errors = {}
     success = False
@@ -201,15 +196,27 @@ def getProductByImage():
             print({'mark': f'{marks}'})
         else:
             errors[file.filename] = 'File type is not allowed'
+    if request.form.get('startDx') is not None:
+        startDx = float(request.form.get('startDx'))
+        startDy = float(request.form.get('startDy'))
+        endDx = float(request.form.get('endDx'))
+        endDy = float(request.form.get('endDy'))
 
-    # TEST
-    productName = image_process.roi(
-        img=image_np,
-        startDx=startDx,
-        startDy=startDy,
-        endDx=endDx,
-        endDy=endDy
-    )
+        # 바운딩 박스 없을 때
+        if startDx == startDy == endDx == endDy == 0.0:
+            productName = ''
+    
+        else:
+            productName = image_process.roi(
+                img=image_np,
+                startDx=startDx,
+                startDy=startDy,
+                endDx=endDx,
+                endDy=endDy
+            )
+    
+    else:
+        productName = ''
 
     if success and errors:
         errors['message'] = 'File(s) successfully uploaded'
@@ -224,6 +231,7 @@ def getProductByImage():
         respDict = dict()
         respDict['status'] = 'SUCCESS'
         respDict['result'] = {
+            'detected_name': productName,
             'mark': marks,
             'details': details,
             'products': result,

@@ -5,8 +5,8 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-String URL = 'http://10.0.2.2:5000';
-// String URL = 'http://211.59.155.207:5000';
+// String URL = 'http://10.0.2.2:5000';
+String URL = 'http://211.59.155.207:5000';
 // String URL = 'http://localhost:5000';
 
 // 단일 상품 정보
@@ -81,7 +81,8 @@ Future<ProductList?> getProducts({productName}) async {
   return productList;
 }
 
-uploadImage(String productName, String filePath, List boundingBoxVertex) async {
+Future<Map<String, dynamic>> uploadImage(
+    String productName, Uint8List filePath, List boundingBoxVertex) async {
   var request = http.MultipartRequest("POST", Uri.parse("$URL/image"));
 
   request.fields['productName'] = productName;
@@ -95,7 +96,8 @@ uploadImage(String productName, String filePath, List boundingBoxVertex) async {
   var picture = http.MultipartFile.fromBytes(
     'files[]',
     // (await rootBundle.load('assets/images/product03.jpg')).buffer.asUint8List(),
-    await File(filePath).readAsBytes(),
+    // await File(filePath).readAsBytes(),
+    filePath,
     filename: 'testimage.png',
   );
 
@@ -107,8 +109,8 @@ uploadImage(String productName, String filePath, List boundingBoxVertex) async {
 
   var result = String.fromCharCodes(responseData);
   Map<String, dynamic> data = jsonDecode(result);
-//  print(data['result']['products']);
-//  print(data['result']['products'].length);
+
+  return data;
 }
 
 class ProductList {
