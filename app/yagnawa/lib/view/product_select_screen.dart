@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yagnawa/main.dart';
+import 'package:yagnawa/main_screen.dart';
 import 'package:yagnawa/products.dart';
 import '../constants.dart';
 import '../products.dart';
@@ -214,38 +216,75 @@ class TopArea extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            alignment: Alignment.topLeft,
-            width: size.width * 0.3,
-            child: IconButton(
-              visualDensity: VisualDensity.compact,
-              alignment: Alignment.centerLeft,
-              icon: const Icon(Icons.arrow_back_ios_rounded),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ),
-          const Text(
-            '약나와',
-            style: TextStyle(
-              color: yDefaultDarkGreen,
-              fontWeight: FontWeight.bold,
-              fontSize: 40,
-              fontFamily: 'Jua',
-            ),
-          ),
+          BackButton(size: size),
+          const LogoText(),
           SizedBox(
             width: size.width * 0.3,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 IconButton(icon: const Icon(Icons.camera), onPressed: () {}),
-                IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+                // IconButton(icon: const Icon(Icons.search), onPressed: () {}),
               ],
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class LogoText extends StatelessWidget {
+  const LogoText({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // return const Text(
+    //   '약나와',
+    //   style: TextStyle(
+    //     color: yDefaultDarkGreen,
+    //     fontWeight: FontWeight.bold,
+    //     fontSize: 40,
+    //     fontFamily: 'Jua',
+    //   ),
+    // );
+    return TextButton(
+      child: const Text(
+        '약나와',
+        style: TextStyle(
+          color: yDefaultDarkGreen,
+          fontWeight: FontWeight.bold,
+          fontSize: 40,
+          fontFamily: 'Jua',
+        ),
+      ),
+      onPressed: () => Get.to(MainScreen()),
+    );
+  }
+}
+
+class BackButton extends StatelessWidget {
+  const BackButton({
+    Key? key,
+    required this.size,
+  }) : super(key: key);
+
+  final Size size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.topLeft,
+      width: size.width * 0.3,
+      child: IconButton(
+        visualDensity: VisualDensity.compact,
+        alignment: Alignment.centerLeft,
+        icon: const Icon(Icons.arrow_back_ios_rounded),
+        onPressed: () {
+          Get.back();
+        },
       ),
     );
   }

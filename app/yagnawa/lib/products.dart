@@ -5,8 +5,8 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-// String URL = 'http://10.0.2.2:5000';
-String URL = 'http://211.59.155.207:5000';
+String URL = 'http://10.0.2.2:5000';
+// String URL = 'http://211.59.155.207:5000';
 // String URL = 'http://localhost:5000';
 
 // 단일 상품 정보

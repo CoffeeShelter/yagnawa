@@ -191,7 +191,7 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
           print(boundingBoxVertex);
           uploadImage('비타민', uintImage, boundingBoxVertex).then(
             (value) {
-              Get.to(
+              Get.off(
                 () => ProductSelectPage(
                   data: value,
                 ),
