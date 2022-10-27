@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yagnawa/constants.dart';
 import 'package:yagnawa/products.dart';
+import 'package:yagnawa/view/comparison_site.dart';
 import '../appbar.dart';
+import '../mark.dart';
 
 class ProductInfoPage extends StatelessWidget {
   const ProductInfoPage({
@@ -180,13 +182,12 @@ class ProductInfoScreen extends StatelessWidget {
                         ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const <Widget>[
+                          children: <Widget>[
                             CertifiedMark(
-                              markImage: AssetImage("assets/images/gmp.png"),
+                              mark: 'korCertifiMark (국내 건강기능식품)',
                             ),
                             CertifiedMark(
-                              markImage: AssetImage(
-                                  "assets/images/kor_functional.png"),
+                              mark: 'gmp (국내 GMP)',
                             ),
                           ],
                         )
@@ -418,13 +419,19 @@ class ProductInfoScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       color: Colors.white,
                     ),
-                    child: const Text(
-                      '구매하러 가기',
-                      style: TextStyle(
-                        fontSize: yDefaultBigFontSize,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                    child: TextButton(
+                      child: const Text(
+                        '구매하러 가기',
+                        style: TextStyle(
+                          fontSize: yDefaultBigFontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
+                      onPressed: () {
+                        Get.to(ComparisonSite(
+                            productName: snapshot.data.productName));
+                      },
                     ),
                   )
                 ],
@@ -433,30 +440,6 @@ class ProductInfoScreen extends StatelessWidget {
           );
         }
       },
-    );
-  }
-}
-
-class CertifiedMark extends StatelessWidget {
-  const CertifiedMark({
-    Key? key,
-    required this.markImage,
-  }) : super(key: key);
-
-  final AssetImage markImage;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 64,
-      height: 64,
-      margin: const EdgeInsets.only(top: 5),
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: markImage,
-        ),
-      ),
     );
   }
 }
