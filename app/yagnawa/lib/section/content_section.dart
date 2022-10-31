@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../products.dart';
 
-class ContentSection extends StatelessWidget {
+class ContentSection extends StatefulWidget {
   const ContentSection({
     Key? key,
     required this.product,
@@ -10,10 +10,17 @@ class ContentSection extends StatelessWidget {
 
   final Product product;
 
+  @override
+  State<ContentSection> createState() => _ContentSectionState();
+}
+
+class _ContentSectionState extends State<ContentSection> {
+  bool isShow = false;
+
   List<Widget> getContents() {
     List<Widget> contentList = [];
 
-    for (String content in product.contents) {
+    for (String content in widget.product.contents) {
       var obj = Container(
         margin: const EdgeInsets.only(
           top: 10.0,
@@ -82,12 +89,70 @@ class ContentSection extends StatelessWidget {
               children: getContents(),
             ),
           ),
+          isShow
+              ? ExtraField(
+                  product: widget.product,
+                )
+              : Container(),
           TextButton(
-            child: const Text('+ 더보기'),
-            onPressed: () {},
+            child: isShow ? const Text('- 최소화') : const Text('+ 더보기'),
+            onPressed: () {
+              setState(() {
+                isShow = !isShow;
+              });
+            },
           )
         ],
       ),
+    );
+  }
+}
+
+class ExtraField extends StatelessWidget {
+  const ExtraField({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
+
+  final Product product;
+
+  List<Widget> getExtra() {
+    List<Widget> extraList = [];
+
+    for (String extra in product.extra) {
+      var obj = Container(
+        margin: const EdgeInsets.only(
+          top: 10.0,
+        ),
+        padding: const EdgeInsets.only(
+          bottom: 10.0,
+        ),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: yDefaultDarkGreen, width: 2.0),
+          ),
+        ),
+        child: Text(
+          extra,
+          style: const TextStyle(
+            fontSize: 15.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+      );
+
+      extraList.add(obj);
+    }
+
+    return extraList;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: getExtra(),
     );
   }
 }

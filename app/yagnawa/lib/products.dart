@@ -134,6 +134,7 @@ class Product {
   String componyName; // 회사 명
   List<dynamic> functionality; // 기능성
   List<dynamic> contents; // 함량 정보
+  List<dynamic> extra; // 기타 정보
 
   Product({
     required this.productCode,
@@ -141,6 +142,7 @@ class Product {
     required this.componyName,
     required this.functionality,
     required this.contents,
+    required this.extra,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -150,6 +152,7 @@ class Product {
       componyName: json['componyName'] ??= 'null',
       functionality: json['functionally'] ??= [],
       contents: json['contents'] ??= [],
+      extra: json['extra'] ??= [],
     );
   }
 }

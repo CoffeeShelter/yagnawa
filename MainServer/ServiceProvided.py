@@ -90,14 +90,3 @@ class ServiceProvided:
             )
 
         return json_string
-
-
-"""
-if __name__ == "__main__":
-    nutrient = Nutrient()
-    nutrient.connectDatabase()
-    nutrient.createCursor()
-    result = nutrient.getProductsInfo('비타민')
-
-    data = ServiceProvided.convertInformation(data=result)
-"""
