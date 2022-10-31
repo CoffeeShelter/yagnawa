@@ -21,3 +21,4 @@ class ComparisonSite extends StatelessWidget {
     );
   }
 }
+//#_sr_lst_84184130798 > div.product_info_main__piyRs > div.product_img_area__1aA4L > img

@@ -7,6 +7,11 @@ from tokenize import String
 class Product():
     SAMPLE = ['e291a0', 'e291a1', 'e291a2', 'e291a3', 'e291a4',
               'e291a5', 'e291a6', 'e291a7', 'e291a8', 'e291a9']
+    EXTRA = ['성상', '납', '카드뮴', '수은', '대장균', '붕해', '헥산', '비소', '세균', '메탄올']
+    MAIN_CONTENT = ['진세노사이드 Rg1,  Rb1 및 Rg3의 합', '루테인', 'EPA+DHA',
+                    '비타민D', '비타민B2', '비타민B1', '비타민B6', '비타민A', '망간',
+                    '판토텐산', '셀레늄', '아연', '나이아신', '비타민E', '지아잔틴', '루테인',
+                    ]
 
     def __init__(self):
         self.productCode = ''
@@ -20,7 +25,7 @@ class Product():
         self.productName = str(productName[0])
         self.componyName = str(componyName[0])
         self.functionally = self.formattingFunctionally(str(functionally[0]))
-        self.contents = self.formattingContents(str(contents))
+        self.contents, _ = self.formattingContents(str(contents))
         # self.contents = str(contents)
 
     def formattingFunctionally(self, functionally, debug=False):
@@ -59,11 +64,28 @@ class Product():
 
     def formattingContents(self, contents):
         temp = []
+        extra = []
+        result = []
+
+        check = False
 
         if '\n' in contents:
             temp = contents.split('\n')
 
-        return temp
+        while len(temp) > 0:
+            content = temp.pop()
+            check = False
+
+            for x in Product.EXTRA:
+                if x in content:
+                    extra.append(content)
+                    check = True
+                    break
+
+            if check == False:
+                result.append(content)
+
+        return result, extra
 
 
 """

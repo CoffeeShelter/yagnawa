@@ -8,4 +8,5 @@ const yDefaultGrey = Color.fromRGBO(246, 251, 244, 1.0);
 const double yDefaultPadding = 20.0;
 
 const double yDefaultFontSize = 14.0;
-const double yDefaultBigFontSize = 16.0;
+// const double yDefaultBigFontSize = 16.0;
+const double yDefaultBigFontSize = 20.0;
