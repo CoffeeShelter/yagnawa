@@ -135,6 +135,8 @@ class Product {
   List<dynamic> functionality; // 기능성
   List<dynamic> contents; // 함량 정보
   List<dynamic> extra; // 기타 정보
+  List<dynamic> marks; // 인증마크
+  String image; // 이미지 주소
 
   Product({
     required this.productCode,
@@ -143,6 +145,8 @@ class Product {
     required this.functionality,
     required this.contents,
     required this.extra,
+    required this.marks,
+    required this.image,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -153,6 +157,8 @@ class Product {
       functionality: json['functionally'] ??= [],
       contents: json['contents'] ??= [],
       extra: json['extra'] ??= [],
+      marks: json['marks'] ??= [],
+      image: json['image'] ??= '',
     );
   }
 }

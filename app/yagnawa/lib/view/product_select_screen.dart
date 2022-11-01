@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yagnawa/main.dart';
 import 'package:yagnawa/main_screen.dart';
 import 'package:yagnawa/products.dart';
 import '../constants.dart';
@@ -32,7 +31,7 @@ class ProductSelectPage extends StatelessWidget {
   }
 }
 
-class ProductSelectScreen extends StatelessWidget {
+class ProductSelectScreen extends StatefulWidget {
   ProductSelectScreen({
     Key? key,
     required this.productName,
@@ -44,9 +43,15 @@ class ProductSelectScreen extends StatelessWidget {
   Map<String, dynamic> data;
 
   @override
+  State<ProductSelectScreen> createState() => _ProductSelectScreenState();
+}
+
+class _ProductSelectScreenState extends State<ProductSelectScreen> {
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    ProductList products = ProductList.fromJson(data['result']['products']);
+    ProductList products =
+        ProductList.fromJson(widget.data['result']['products']);
 
     return Column(
       children: <Widget>[
@@ -55,7 +60,7 @@ class ProductSelectScreen extends StatelessWidget {
           width: size.width * 0.67,
           child: TextField(
             decoration: InputDecoration(
-              hintText: data['result']['detected_name'],
+              hintText: widget.data['result']['detected_name'],
               hintStyle: const TextStyle(
                 color: Colors.black,
                 fontSize: 18.0,
@@ -82,7 +87,7 @@ class ProductSelectScreen extends StatelessWidget {
                     itemBuilder: (BuildContext context, int index) {
                       return ItemCard(
                         size: size,
-                        colors: colors,
+                        colors: widget.colors,
                         index: index,
                         product: products.products[index],
                       );
@@ -95,6 +100,70 @@ class ProductSelectScreen extends StatelessWidget {
     );
   }
 }
+
+// class ProductSelectScreen extends StatelessWidget {
+//   ProductSelectScreen({
+//     Key? key,
+//     required this.productName,
+//     required this.data,
+//   }) : super(key: key);
+
+//   final List<Color> colors = [yDefaultDarkGreen, yDefaultGreen];
+//   final String productName;
+//   Map<String, dynamic> data;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     Size size = MediaQuery.of(context).size;
+//     ProductList products = ProductList.fromJson(data['result']['products']);
+
+//     return Column(
+//       children: <Widget>[
+//         TopArea(size: size),
+//         Container(
+//           width: size.width * 0.67,
+//           child: TextField(
+//             decoration: InputDecoration(
+//               hintText: data['result']['detected_name'],
+//               hintStyle: const TextStyle(
+//                 color: Colors.black,
+//                 fontSize: 18.0,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//               enabledBorder: InputBorder.none,
+//               focusedBorder: InputBorder.none,
+//               suffixIcon: IconButton(
+//                 icon: const Icon(Icons.search_rounded),
+//                 color: yDefaultGreen,
+//                 iconSize: 22.0,
+//                 onPressed: () {},
+//               ),
+//             ),
+//           ),
+//         ),
+//         Expanded(
+//           child: products.products.isNotEmpty
+//               ? Container(
+//                   color: yDefaultGrey,
+//                   child: ListView.builder(
+//                     scrollDirection: Axis.vertical,
+//                     itemCount: products.products.length,
+//                     itemBuilder: (BuildContext context, int index) {
+//                       return ItemCard(
+//                         size: size,
+//                         colors: colors,
+//                         index: index,
+//                         product: products.products[index],
+//                       );
+//                     },
+//                   ),
+//                 )
+//               : const Text('검색 결과가 없습니다.\n상품 명을 확인해주십시오.'),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class ItemCard extends StatelessWidget {
   const ItemCard({

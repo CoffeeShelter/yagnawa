@@ -93,6 +93,14 @@ class ProductListScreen extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
+                Text(
+                  '5분 이상 소요될 수 있습니다',
+                  style: TextStyle(
+                    fontSize: yDefaultFontSize,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                  ),
+                ),
               ],
             ),
           );
@@ -156,6 +164,30 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var noImage = Container(
+      width: size.width * 0.2,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: AssetImage("assets/images/No-Image-Found.png"),
+        ),
+      ),
+    );
+
+    var netImage = Container(
+      width: size.width * 0.2,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: NetworkImage(product.image),
+        ),
+      ),
+    );
+
+    var image = product.image != ''
+        ? NetworkImage(product.image)
+        : const AssetImage("assets/images/No-Image-Found.png");
+
     return GestureDetector(
       child: Container(
         margin: const EdgeInsets.only(
@@ -180,17 +212,7 @@ class ItemCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Container(
-                    width: size.width * 0.2,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage(
-                          "assets/images/No-Image-Found.png",
-                        ),
-                      ),
-                    ),
-                  ),
+                  product.image == '' ? noImage : netImage,
                   SizedBox(
                     width: size.width * 0.65,
                     child: Column(
@@ -200,7 +222,7 @@ class ItemCard extends StatelessWidget {
                         Text(
                           product.productName,
                           style: const TextStyle(
-                            fontSize: yDefaultBigFontSize + 2,
+                            fontSize: yDefaultBigFontSize - 2,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
@@ -218,10 +240,11 @@ class ItemCard extends StatelessWidget {
                             Text(
                               product.componyName,
                               style: const TextStyle(
-                                fontSize: yDefaultBigFontSize,
+                                fontSize: yDefaultBigFontSize - 4,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black54,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),

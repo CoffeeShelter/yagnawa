@@ -1,5 +1,7 @@
 import re
 
+from Crawler import Crawler
+
 class Product():
     SAMPLE = ['e291a0', 'e291a1', 'e291a2', 'e291a3', 'e291a4',
               'e291a5', 'e291a6', 'e291a7', 'e291a8', 'e291a9']
@@ -20,6 +22,7 @@ class Product():
         self.contents = []
         self.extra = []
         self.marks = []
+        self.image = ''
 
     def setProduct(self, productCode, productName, componyName, functionally, contents):
         self.productCode = str(productCode[0])
@@ -28,6 +31,7 @@ class Product():
         self.functionally = self.formattingFunctionally(str(functionally[0]))
         self.contents, self.extra = self.formattingContents(str(contents))
         # self.contents = str(contents)
+        self.image = Crawler.getNetImage(self.productName)
 
     def formattingFunctionally(self, functionally, debug=False):
         temp = []

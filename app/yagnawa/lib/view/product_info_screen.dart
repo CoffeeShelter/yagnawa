@@ -143,6 +143,12 @@ class InfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDetected = false;
+
+    if (product.marks.isNotEmpty) {
+      isDetected = true;
+    }
+
     return Container(
       color: Colors.green[900],
       child: SingleChildScrollView(
@@ -150,9 +156,15 @@ class InfoScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             // 제품 이미지
-            ImageSection(size: size),
+            ImageSection(
+              product: product,
+              size: size,
+            ),
             // 제품 명, 회사 명, 인증 현황
-            BaseInfoSection(product: product),
+            BaseInfoSection(
+              product: product,
+              isDetected: isDetected,
+            ),
             // 기능성
             FunctionallySection(product: product),
             // 함량 정보

@@ -3,14 +3,21 @@ import '../constants.dart';
 import '../mark.dart';
 import '../products.dart';
 
-class BaseInfoSection extends StatelessWidget {
-  const BaseInfoSection({
+class BaseInfoSection extends StatefulWidget {
+  BaseInfoSection({
     Key? key,
     required this.product,
+    required this.isDetected,
   }) : super(key: key);
 
   final Product product;
+  bool isDetected;
 
+  @override
+  State<BaseInfoSection> createState() => _BaseInfoSectionState();
+}
+
+class _BaseInfoSectionState extends State<BaseInfoSection> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,7 +34,7 @@ class BaseInfoSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            product.productName,
+            widget.product.productName,
             style: const TextStyle(
               fontSize: yDefaultBigFontSize,
               fontWeight: FontWeight.bold,
@@ -35,7 +42,7 @@ class BaseInfoSection extends StatelessWidget {
             ),
           ),
           Text(
-            product.componyName,
+            widget.product.componyName,
             style: const TextStyle(
               fontSize: yDefaultBigFontSize,
               fontWeight: FontWeight.bold,
@@ -62,19 +69,47 @@ class BaseInfoSection extends StatelessWidget {
               ),
             ],
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              CertifiedMark(
-                mark: 'korCertifiMark (국내 건강기능식품)',
-              ),
-              CertifiedMark(
-                mark: 'gmp (국내 GMP)',
-              ),
-            ],
-          )
+          widget.isDetected
+              ? MarkFrame(marks: widget.product.marks)
+              : TextButton(
+                  child: const Text("인증마크 탐지"),
+                  onPressed: () {},
+                ),
         ],
       ),
     );
+  }
+}
+
+class MarkFrame extends StatelessWidget {
+  const MarkFrame({
+    Key? key,
+    required this.marks,
+  }) : super(key: key);
+
+  final List<dynamic> marks;
+
+  List<Widget> getMarkList() {
+    List<Widget> markList = [];
+
+    for (String markName in marks) {
+      var mark = CertifiedMark(
+        mark: markName,
+      );
+
+      markList.add(mark);
+    }
+
+    return markList;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return marks.isEmpty
+        ? const Text('탐지된 인증마크가 없습니다.')
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: getMarkList(),
+          );
   }
 }
