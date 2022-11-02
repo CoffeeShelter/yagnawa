@@ -8,10 +8,12 @@ class BaseInfoSection extends StatefulWidget {
     Key? key,
     required this.product,
     required this.isDetected,
+    required this.marks,
   }) : super(key: key);
 
   final Product product;
   bool isDetected;
+  final List<dynamic>? marks;
 
   @override
   State<BaseInfoSection> createState() => _BaseInfoSectionState();
@@ -70,11 +72,14 @@ class _BaseInfoSectionState extends State<BaseInfoSection> {
             ],
           ),
           widget.isDetected
-              ? MarkFrame(marks: widget.product.marks)
-              : TextButton(
+              ? MarkFrame(marks: widget.marks ?? [])
+              : const Text('탐지된 인증마크가 없습니다.'),
+          /*
+              TextButton(
                   child: const Text("인증마크 탐지"),
                   onPressed: () {},
-                ),
+              ),
+              */
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yagnawa/products.dart';
+import 'package:yagnawa/view/product_info_screen.dart';
 import '../constants.dart';
 import '../products.dart';
 
@@ -258,7 +259,13 @@ class ItemCard extends StatelessWidget {
         ),
       ),
       onTap: () {
-        Get.toNamed('/product?productCode=${product.productCode}');
+        Get.to(
+          ProductInfoPage(
+            productCode: product.productCode,
+            isdetected: false,
+          ),
+        );
+        // Get.toNamed('/product?productCode=${product.productCode}');
       },
     );
   }

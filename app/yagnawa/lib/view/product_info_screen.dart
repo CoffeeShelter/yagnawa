@@ -13,20 +13,25 @@ import '../section/recommendation_section.dart';
 class ProductInfoPage extends StatelessWidget {
   const ProductInfoPage({
     Key? key,
+    required this.productCode,
+    required this.isdetected,
+    this.marks,
   }) : super(key: key);
+
+  final List<dynamic>? marks;
+  final String productCode;
+  final bool isdetected;
 
   @override
   Widget build(BuildContext context) {
-    String? productCode = Get.parameters['productCode'];
-
-    productCode ??= '';
-
     return MaterialApp(
       title: 'YagNaWa',
       home: Scaffold(
         appBar: yacnawaAppBar(),
         body: ProductInfoScreen(
           productCode: productCode,
+          isdetected: isdetected,
+          marks: marks,
         ),
       ),
     );
@@ -35,10 +40,14 @@ class ProductInfoPage extends StatelessWidget {
 
 class ProductInfoScreen extends StatelessWidget {
   final String productCode;
+  final bool isdetected;
+  final List<dynamic>? marks;
 
   const ProductInfoScreen({
     Key? key,
     required this.productCode,
+    required this.isdetected,
+    required this.marks,
   }) : super(key: key);
 
   @override
@@ -94,6 +103,8 @@ class ProductInfoScreen extends StatelessWidget {
           return InfoScreen(
             size: size,
             product: snapshot.data,
+            isdetected: isdetected,
+            marks: marks,
           );
         }
       },
@@ -136,14 +147,21 @@ class InfoScreen extends StatelessWidget {
     Key? key,
     required this.size,
     required this.product,
+    required this.isdetected,
+    required this.marks,
   }) : super(key: key);
 
   final Size size;
   final Product product;
+  final bool isdetected;
+  final List<dynamic>? marks;
 
   @override
   Widget build(BuildContext context) {
     bool isDetected = false;
+    if (isdetected == true) {
+      isDetected = isdetected;
+    }
 
     if (product.marks.isNotEmpty) {
       isDetected = true;
@@ -164,6 +182,7 @@ class InfoScreen extends StatelessWidget {
             BaseInfoSection(
               product: product,
               isDetected: isDetected,
+              marks: marks,
             ),
             // 기능성
             FunctionallySection(product: product),

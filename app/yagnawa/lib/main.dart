@@ -19,11 +19,13 @@ class MainPage extends StatelessWidget {
     return GetMaterialApp(
       title: 'YagNaWa',
       getPages: [
+        /*
         GetPage(
           name: '/product',
           // page: () => const ProductListScreen(),
           page: () => const ProductInfoPage(),
         ),
+        */
         GetPage(
           name: '/products',
           page: () => const ProductListPage(),

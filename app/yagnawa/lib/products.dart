@@ -157,7 +157,7 @@ class Product {
       functionality: json['functionally'] ??= [],
       contents: json['contents'] ??= [],
       extra: json['extra'] ??= [],
-      marks: json['marks'] ??= [],
+      marks: json['mark'] ??= [],
       image: json['image'] ??= '',
     );
   }

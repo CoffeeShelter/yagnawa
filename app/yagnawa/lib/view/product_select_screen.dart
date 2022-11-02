@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yagnawa/main_screen.dart';
 import 'package:yagnawa/products.dart';
+import 'package:yagnawa/view/product_info_screen.dart';
 import '../constants.dart';
 import '../products.dart';
 
 class ProductSelectPage extends StatelessWidget {
-  Map<String, dynamic> data;
+  final Map<String, dynamic> data;
 
-  ProductSelectPage({
+  const ProductSelectPage({
     required this.data,
     Key? key,
   }) : super(key: key);
@@ -40,18 +41,33 @@ class ProductSelectScreen extends StatefulWidget {
 
   final List<Color> colors = [yDefaultDarkGreen, yDefaultGreen];
   final String productName;
-  Map<String, dynamic> data;
+  final Map<String, dynamic> data;
 
   @override
   State<ProductSelectScreen> createState() => _ProductSelectScreenState();
 }
 
 class _ProductSelectScreenState extends State<ProductSelectScreen> {
+  final myController = TextEditingController();
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     ProductList products =
         ProductList.fromJson(widget.data['result']['products']);
+    List<Product> productList = products.products;
+
+    if (loading) {
+      return Column(
+        children: <Widget>[
+          TopArea(size: size),
+          const LoadingWidget(),
+        ],
+      );
+    }
+
+    var noResult = const Text('검색 결과가 없습니다.\n상품 명을 확인해주십시오.');
 
     return Column(
       children: <Widget>[
@@ -59,6 +75,7 @@ class _ProductSelectScreenState extends State<ProductSelectScreen> {
         Container(
           width: size.width * 0.67,
           child: TextField(
+            controller: myController,
             decoration: InputDecoration(
               hintText: widget.data['result']['detected_name'],
               hintStyle: const TextStyle(
@@ -72,98 +89,54 @@ class _ProductSelectScreenState extends State<ProductSelectScreen> {
                 icon: const Icon(Icons.search_rounded),
                 color: yDefaultGreen,
                 iconSize: 22.0,
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    loading = true;
+                  });
+                  getProducts(productName: myController.text).then(
+                    (value) {
+                      setState(() {
+                        loading = false;
+                      });
+                      ProductList? pdList = value;
+                      if (pdList != null) {
+                        setState(
+                          () {
+                            productList = pdList.products;
+                          },
+                        );
+                      }
+                    },
+                  );
+                },
               ),
             ),
           ),
         ),
         Expanded(
-          child: products.products.isNotEmpty
+          child: productList.isNotEmpty
               ? Container(
                   color: yDefaultGrey,
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: products.products.length,
+                    itemCount: productList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return ItemCard(
                         size: size,
                         colors: widget.colors,
                         index: index,
-                        product: products.products[index],
+                        product: productList[index],
+                        marks: widget.data['result']['mark'],
                       );
                     },
                   ),
                 )
-              : const Text('검색 결과가 없습니다.\n상품 명을 확인해주십시오.'),
+              : noResult,
         ),
       ],
     );
   }
 }
-
-// class ProductSelectScreen extends StatelessWidget {
-//   ProductSelectScreen({
-//     Key? key,
-//     required this.productName,
-//     required this.data,
-//   }) : super(key: key);
-
-//   final List<Color> colors = [yDefaultDarkGreen, yDefaultGreen];
-//   final String productName;
-//   Map<String, dynamic> data;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     Size size = MediaQuery.of(context).size;
-//     ProductList products = ProductList.fromJson(data['result']['products']);
-
-//     return Column(
-//       children: <Widget>[
-//         TopArea(size: size),
-//         Container(
-//           width: size.width * 0.67,
-//           child: TextField(
-//             decoration: InputDecoration(
-//               hintText: data['result']['detected_name'],
-//               hintStyle: const TextStyle(
-//                 color: Colors.black,
-//                 fontSize: 18.0,
-//                 fontWeight: FontWeight.bold,
-//               ),
-//               enabledBorder: InputBorder.none,
-//               focusedBorder: InputBorder.none,
-//               suffixIcon: IconButton(
-//                 icon: const Icon(Icons.search_rounded),
-//                 color: yDefaultGreen,
-//                 iconSize: 22.0,
-//                 onPressed: () {},
-//               ),
-//             ),
-//           ),
-//         ),
-//         Expanded(
-//           child: products.products.isNotEmpty
-//               ? Container(
-//                   color: yDefaultGrey,
-//                   child: ListView.builder(
-//                     scrollDirection: Axis.vertical,
-//                     itemCount: products.products.length,
-//                     itemBuilder: (BuildContext context, int index) {
-//                       return ItemCard(
-//                         size: size,
-//                         colors: colors,
-//                         index: index,
-//                         product: products.products[index],
-//                       );
-//                     },
-//                   ),
-//                 )
-//               : const Text('검색 결과가 없습니다.\n상품 명을 확인해주십시오.'),
-//         ),
-//       ],
-//     );
-//   }
-// }
 
 class ItemCard extends StatelessWidget {
   const ItemCard({
@@ -172,12 +145,14 @@ class ItemCard extends StatelessWidget {
     required this.colors,
     required this.index,
     required this.product,
+    required this.marks,
   }) : super(key: key);
 
   final Size size;
   final List<Color> colors;
   final int index;
   final Product product;
+  final List<dynamic> marks;
 
   @override
   Widget build(BuildContext context) {
@@ -260,7 +235,14 @@ class ItemCard extends StatelessWidget {
         ),
       ),
       onTap: () {
-        Get.toNamed('/product?productCode=${product.productCode}');
+        Get.to(
+          ProductInfoPage(
+            productCode: product.productCode,
+            isdetected: true,
+            marks: marks,
+          ),
+        );
+        // Get.toNamed('/product?productCode=${product.productCode}&isdetected=1');
       },
     );
   }
@@ -354,6 +336,42 @@ class BackButton extends StatelessWidget {
         onPressed: () {
           Get.back();
         },
+      ),
+    );
+  }
+}
+
+class LoadingWidget extends StatelessWidget {
+  const LoadingWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const <Widget>[
+          CircularProgressIndicator(),
+          SizedBox(
+            width: 20,
+            height: 20,
+          ),
+          Text(
+            '제품 정보를 가져오는 중 입니다',
+            style: TextStyle(
+              fontSize: yDefaultFontSize,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          Text(
+            '5분 이상 소요될 수 있습니다',
+            style: TextStyle(
+              fontSize: yDefaultFontSize,
+              fontWeight: FontWeight.bold,
+              color: Colors.black54,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -205,7 +205,7 @@ def getProductByImage():
         # 바운딩 박스 없을 때
         if startDx == startDy == endDx == endDy == 0.0:
             productName = ''
-    
+
         else:
             productName = image_process.roi(
                 img=image_np,
@@ -214,9 +214,12 @@ def getProductByImage():
                 endDx=endDx,
                 endDy=endDy
             )
-    
+
     else:
         productName = ''
+
+    # TODO 변수 지울 것
+    productName = '유산균'
 
     if success and errors:
         errors['message'] = 'File(s) successfully uploaded'
