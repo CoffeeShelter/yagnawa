@@ -2,7 +2,7 @@ import pandas as pd
 import json
 
 from nutrient import *
-from Product import *
+from Product import Product
 
 
 class ServiceProvided:
@@ -34,8 +34,13 @@ class ServiceProvided:
                 functionally=functionally,
                 contents=contents,
             )
+            if len(product.containContents) > 0:
+                result = Nutrient.getRecoProducts(product.containContents[0])
+                result = ServiceProvided.convertInformation(
+                    data=result, only=False)
+                product.recommended_products = result
 
-            json_string = ServiceProvided.convertJsonData(product, only=only)
+            # json_string = ServiceProvided.convertJsonData(product, only=only)
 
             return product.__dict__
 

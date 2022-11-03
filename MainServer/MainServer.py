@@ -90,6 +90,10 @@ def getProducts(productName):
         건강기능식품 제품 목록 Json형태로 반환
 
     """
+    productName = productName.replace('%', '')
+    productName = productName.replace('\'', '')
+    productName = productName.replace('\n', '')
+
     result = nutrient.getProductsInfo(productName)
     result = ServiceProvided.convertInformation(result)
 
@@ -214,12 +218,17 @@ def getProductByImage():
                 endDx=endDx,
                 endDy=endDy
             )
+            productName = productName.replace('%', '')
+            productName = productName.replace('\'', '')
+            productName = productName.replace('\n', '')
+            productName = productName.replace('\r', '')
+            print(f'search product name : {productName}')
 
     else:
         productName = ''
 
     # TODO 변수 지울 것
-    productName = '유산균'
+    # productName = '유산균'
 
     if success and errors:
         errors['message'] = 'File(s) successfully uploaded'

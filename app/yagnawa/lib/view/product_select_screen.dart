@@ -16,6 +16,7 @@ class ProductSelectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     String? productName = Get.parameters['productName'];
 
     productName ??= '';
@@ -26,6 +27,7 @@ class ProductSelectPage extends StatelessWidget {
         body: ProductSelectScreen(
           productName: data['result']['detected_name'],
           data: data,
+          size: size,
         ),
       ),
     );
@@ -37,47 +39,70 @@ class ProductSelectScreen extends StatefulWidget {
     Key? key,
     required this.productName,
     required this.data,
+    required this.size,
   }) : super(key: key);
 
   final List<Color> colors = [yDefaultDarkGreen, yDefaultGreen];
   final String productName;
   final Map<String, dynamic> data;
+  final Size size;
 
   @override
   State<ProductSelectScreen> createState() => _ProductSelectScreenState();
 }
 
 class _ProductSelectScreenState extends State<ProductSelectScreen> {
-  final myController = TextEditingController();
+  TextEditingController myController = TextEditingController();
   bool loading = false;
+  var noItem = const Text('검색 결과가 없습니다.\n상품 명을 확인해주십시오.');
+  dynamic itemListWidget = const Text('검색 결과가 없습니다.\n상품 명을 확인해주십시오.');
+
+  late List<Product> productList;
+  String currentText = '';
+
+  @override
+  void initState() {
+    print('init');
+
+    ProductList products =
+        ProductList.fromJson(widget.data['result']['products']);
+    productList = products.products;
+
+    currentText = widget.data['result']['detected_name'];
+    myController.text = currentText;
+
+    if (productList.isNotEmpty) {
+      itemListWidget = ItemList(
+        productList: productList,
+        size: widget.size,
+        widget: widget,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    ProductList products =
-        ProductList.fromJson(widget.data['result']['products']);
-    List<Product> productList = products.products;
+    // var itemListWidget =
+    //     ItemList(productList: productList, size: size, widget: widget);
 
     if (loading) {
       return Column(
         children: <Widget>[
-          TopArea(size: size),
+          TopArea(size: widget.size),
           const LoadingWidget(),
         ],
       );
     }
 
-    var noResult = const Text('검색 결과가 없습니다.\n상품 명을 확인해주십시오.');
-
     return Column(
       children: <Widget>[
-        TopArea(size: size),
-        Container(
-          width: size.width * 0.67,
+        TopArea(size: widget.size),
+        SizedBox(
+          width: widget.size.width * 0.67,
           child: TextField(
             controller: myController,
             decoration: InputDecoration(
-              hintText: widget.data['result']['detected_name'],
+              // hintText: widget.data['result']['detected_name'],
               hintStyle: const TextStyle(
                 color: Colors.black,
                 fontSize: 18.0,
@@ -93,18 +118,26 @@ class _ProductSelectScreenState extends State<ProductSelectScreen> {
                   setState(() {
                     loading = true;
                   });
-                  getProducts(productName: myController.text).then(
+                  String query = myController.text;
+                  query = query.replaceAll('\n', '');
+                  query = query.replaceAll('\r', '');
+                  query = query.replaceAll('%', '');
+                  getProducts(productName: query).then(
                     (value) {
-                      setState(() {
-                        loading = false;
-                      });
-                      ProductList? pdList = value;
-                      if (pdList != null) {
-                        setState(
-                          () {
-                            productList = pdList.products;
-                          },
-                        );
+                      if (value != null) {
+                        setState(() {
+                          loading = false;
+                          productList = value.products;
+                          print('결과 ${productList.length}개');
+                          itemListWidget = noItem;
+                          if (productList.isNotEmpty) {
+                            itemListWidget = ItemList(
+                              productList: productList,
+                              size: widget.size,
+                              widget: widget,
+                            );
+                          }
+                        });
                       }
                     },
                   );
@@ -114,26 +147,45 @@ class _ProductSelectScreenState extends State<ProductSelectScreen> {
           ),
         ),
         Expanded(
-          child: productList.isNotEmpty
-              ? Container(
-                  color: yDefaultGrey,
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: productList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ItemCard(
-                        size: size,
-                        colors: widget.colors,
-                        index: index,
-                        product: productList[index],
-                        marks: widget.data['result']['mark'],
-                      );
-                    },
-                  ),
-                )
-              : noResult,
+          child: productList.isNotEmpty ? itemListWidget : noItem,
         ),
       ],
+    );
+  }
+}
+
+class ItemList extends StatelessWidget {
+  const ItemList({
+    Key? key,
+    required this.productList,
+    required this.size,
+    required this.widget,
+  }) : super(key: key);
+
+  final List<Product> productList;
+  final Size size;
+  final ProductSelectScreen widget;
+
+  @override
+  Widget build(BuildContext context) {
+    print('build...');
+
+    return Container(
+      color: yDefaultGrey,
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: productList.length,
+        itemBuilder: (BuildContext context, int index) {
+          print(index);
+          return ItemCard(
+            size: size,
+            colors: widget.colors,
+            index: index,
+            product: productList[index],
+            marks: widget.data['result']['mark'],
+          );
+        },
+      ),
     );
   }
 }
@@ -193,39 +245,43 @@ class ItemCard extends StatelessWidget {
                   ),
                   SizedBox(
                     width: size.width * 0.65,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          product.productName,
-                          style: const TextStyle(
-                            fontSize: yDefaultBigFontSize + 2,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            product.productName,
+                            style: const TextStyle(
+                              fontSize: yDefaultBigFontSize + 2,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              margin: const EdgeInsets.only(
-                                right: 5.0,
-                              ),
-                              child: const Icon(Icons.business),
+                          SingleChildScrollView(
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    right: 5.0,
+                                  ),
+                                  child: const Icon(Icons.business),
+                                ),
+                                Text(
+                                  product.componyName,
+                                  style: const TextStyle(
+                                    fontSize: yDefaultBigFontSize,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(
-                              product.componyName,
-                              style: const TextStyle(
-                                fontSize: yDefaultBigFontSize,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

@@ -30,7 +30,8 @@ class Nutrient:
         if Nutrient.cursor is None:
             Nutrient.cursor = Nutrient.nutrient_db.cursor(cursor)
 
-    def getProductsInfo(self, product_name):
+    @staticmethod
+    def getProductsInfo(product_name):
         sql = f"SELECT * FROM sor WHERE PRDLST_NM like '%{product_name}%'"
 
         if(Nutrient.cursor != None):
@@ -43,7 +44,8 @@ class Nutrient:
         result = Nutrient.cursor.fetchall()
         return result
 
-    def getProductInfo(self, product_id):
+    @staticmethod
+    def getProductInfo(product_id):
         sql = f"SELECT * FROM sor WHERE PRDLST_REPORT_NO = '{product_id}'"
 
         if(Nutrient.cursor != None):
@@ -56,8 +58,9 @@ class Nutrient:
         result = Nutrient.cursor.fetchone()
         return result
 
-    def getRecoProducts(self, content):
-        sql = f"SELECT * FROM SOR WHERE STDR_STND LIKE '%{content}%';"
+    @staticmethod
+    def getRecoProducts(content):
+        sql = f"SELECT * FROM SOR WHERE STDR_STND LIKE '%{content}%' LIMIT 5;"
 
         if(Nutrient.cursor != None):
             print(f'[sql]: {sql}')
@@ -66,5 +69,5 @@ class Nutrient:
             print('cursor를 생성하십시오.')
             return None
 
-        result = Nutrient.cursor.fetchone()
+        result = Nutrient.cursor.fetchall()
         return result

@@ -1,17 +1,16 @@
-import re
-
 from Crawler import Crawler
+
 
 class Product():
     SAMPLE = ['e291a0', 'e291a1', 'e291a2', 'e291a3', 'e291a4',
               'e291a5', 'e291a6', 'e291a7', 'e291a8', 'e291a9']
     EXTRA = ['성상', '납', '카드뮴', '수은', '대장균', '붕해', '헥산', '비소', '세균', '메탄올']
     MAIN_CONTENT = [
-        '진세노사이드 Rg1, Rb1 및 Rg3 의 합', '루테인', 'EPA+DHA', '비타민 C',
+        '진세노사이드', '루테인', 'EPA+DHA', '비타민 C',
         '비타민D', '비타민B2', '비타민B1', '비타민B6', '비타민A', '망간',
         '판토텐산', '셀레늄', '아연', '나이아신', '비타민E', '지아잔틴',
-        '루테인', '비타민C', 'EPA와DHA의 합', '총 모나콜린 K', '프로바이오틱스 수',
-        '락추로스', '셀렌'
+        '루테인', '비타민C', 'EPA', '모나콜린', '프로바이오틱스',
+        '락추로스', '셀렌', 'DHA', '비타민', '지방족',
     ]
 
     def __init__(self):
@@ -21,17 +20,21 @@ class Product():
         self.functionally = []
         self.contents = []
         self.extra = []
+        self.containContents = []
         self.marks = []
         self.image = ''
+        self.recommended_products = []  # 추천 제품
 
     def setProduct(self, productCode, productName, componyName, functionally, contents):
         self.productCode = str(productCode[0])
         self.productName = str(productName[0])
         self.componyName = str(componyName[0])
         self.functionally = self.formattingFunctionally(str(functionally[0]))
-        self.contents, self.extra = self.formattingContents(str(contents))
+        self.contents, self.extra, self.containContents = self.formattingContents(
+            str(contents))
         # self.contents = str(contents)
-        self.image = Crawler.getNetImage(self.productName)
+        # TODO 주석 풀기 ( 이미지 크롤링 )
+        # self.image = Crawler.getNetImage(self.productName)
 
     def formattingFunctionally(self, functionally, debug=False):
         temp = []
@@ -70,6 +73,7 @@ class Product():
     def formattingContents(self, contents):
         temp = []
         extra = []
+        containContents = []
         result = []
 
         check = False
@@ -84,13 +88,14 @@ class Product():
             for x in Product.MAIN_CONTENT:
                 if x in content:
                     result.append(content)
+                    containContents.append(x)
                     check = True
                     break
 
             if check == False:
                 extra.append(content)
 
-        return result, extra
+        return result, extra, containContents
 
 
 """

@@ -15,5 +15,5 @@ def roi(img, startDx, startDy, endDx, endDy):
 
     resultText = pytesseract.image_to_string(output)
     print(f'[OCR 결과]: {resultText}')
-    
+
     return resultText

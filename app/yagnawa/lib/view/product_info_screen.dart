@@ -189,7 +189,7 @@ class InfoScreen extends StatelessWidget {
             // 함량 정보
             ContentSection(product: product),
             // 제품 추천
-            const RecommendationSection(),
+            RecommendationSection(product: product),
             // 구매하러 가기 버튼
             GoShopButton(product: product)
           ],

@@ -1,13 +1,42 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
+import '../products.dart';
 
 class RecommendationSection extends StatelessWidget {
   const RecommendationSection({
     Key? key,
+    required this.product,
   }) : super(key: key);
+
+  final Product product;
+
+  List<Widget> getRecoFrame(
+      List<Product> recommendedProducts, String currentProductCode) {
+    List<Widget> recoFrame = [];
+
+    for (Product product in recommendedProducts) {
+      if (product.productCode == currentProductCode) {
+        continue;
+      }
+
+      var widget = RecommendationProduct(
+        componyName: product.productName,
+        productName: product.componyName,
+        productImage: product.image != ''
+            ? NetworkImage(product.image)
+            : const AssetImage('assets/images/No-Image-Found.png'),
+      );
+
+      recoFrame.add(widget);
+    }
+
+    return recoFrame;
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<Product> recommendedProducts = product.recommendedProducts.products;
+
     return Container(
       alignment: Alignment.center,
       margin: const EdgeInsets.only(
@@ -40,23 +69,8 @@ class RecommendationSection extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const <Widget>[
-                  RecommendationProduct(
-                    componyName: '대웅제약',
-                    productName: '대웅 비타C',
-                    productImage: AssetImage("assets/images/product01.jpg"),
-                  ),
-                  RecommendationProduct(
-                    componyName: 'erom',
-                    productName: '이롬 착한비타민C',
-                    productImage: AssetImage("assets/images/product02.jpg"),
-                  ),
-                  RecommendationProduct(
-                    componyName: '대웅제약',
-                    productName: '대웅 비타C',
-                    productImage: AssetImage("assets/images/product03.jpg"),
-                  ),
-                ],
+                children:
+                    getRecoFrame(recommendedProducts, product.productCode),
               ),
             ),
           ),
@@ -65,6 +79,26 @@ class RecommendationSection extends StatelessWidget {
     );
   }
 }
+
+/*
+const <Widget>[
+  RecommendationProduct(
+    componyName: '대웅제약',
+    productName: '대웅 비타C',
+    productImage: AssetImage("assets/images/product01.jpg"),
+  ),
+  RecommendationProduct(
+    componyName: 'erom',
+    productName: '이롬 착한비타민C',
+    productImage: AssetImage("assets/images/product02.jpg"),
+  ),
+  RecommendationProduct(
+    componyName: '대웅제약',
+    productName: '대웅 비타C',
+    productImage: AssetImage("assets/images/product03.jpg"),
+  ),
+],
+*/
 
 class RecommendationProduct extends StatelessWidget {
   const RecommendationProduct({
@@ -76,7 +110,7 @@ class RecommendationProduct extends StatelessWidget {
 
   final String productName;
   final String componyName;
-  final AssetImage productImage;
+  final dynamic productImage;
 
   @override
   Widget build(BuildContext context) {

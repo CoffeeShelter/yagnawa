@@ -137,6 +137,7 @@ class Product {
   List<dynamic> extra; // 기타 정보
   List<dynamic> marks; // 인증마크
   String image; // 이미지 주소
+  ProductList recommendedProducts; // 추천된 제품들
 
   Product({
     required this.productCode,
@@ -147,6 +148,7 @@ class Product {
     required this.extra,
     required this.marks,
     required this.image,
+    required this.recommendedProducts,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -159,6 +161,7 @@ class Product {
       extra: json['extra'] ??= [],
       marks: json['mark'] ??= [],
       image: json['image'] ??= '',
+      recommendedProducts: ProductList.fromJson(json['recommended_products']),
     );
   }
 }
