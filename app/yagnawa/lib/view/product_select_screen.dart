@@ -5,6 +5,7 @@ import 'package:yagnawa/products.dart';
 import 'package:yagnawa/view/product_info_screen.dart';
 import '../constants.dart';
 import '../products.dart';
+import '../widgets/loading.dart';
 
 class ProductSelectPage extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -89,7 +90,7 @@ class _ProductSelectScreenState extends State<ProductSelectScreen> {
       return Column(
         children: <Widget>[
           TopArea(size: widget.size),
-          const LoadingWidget(),
+          const LoadingWidget(text: '제품 정보를 가져오는 중 입니다.'),
         ],
       );
     }
@@ -144,6 +145,39 @@ class _ProductSelectScreenState extends State<ProductSelectScreen> {
                 },
               ),
             ),
+          ),
+        ),
+        Container(
+          height: 2,
+          width: widget.size.width,
+          color: yDefaultGreen,
+          margin: const EdgeInsets.only(
+            bottom: 20.0,
+            left: 5.0,
+            right: 5.0,
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(
+            bottom: 10.0,
+          ),
+          child: const Text(
+            '찾는 제품을 선택하세요',
+            style: TextStyle(
+              color: yDefaultDarkGreen,
+              fontSize: 20,
+              fontFamily: 'Jua',
+            ),
+          ),
+        ),
+        Container(
+          height: 2,
+          width: widget.size.width,
+          color: yDefaultGreen,
+          margin: const EdgeInsets.only(
+            bottom: 20.0,
+            left: 5.0,
+            right: 5.0,
           ),
         ),
         Expanded(
@@ -253,7 +287,7 @@ class ItemCard extends StatelessWidget {
                           Text(
                             product.productName,
                             style: const TextStyle(
-                              fontSize: yDefaultBigFontSize + 2,
+                              fontSize: yDefaultBigFontSize - 4,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
@@ -261,6 +295,7 @@ class ItemCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                           SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
                             child: Row(
                               children: <Widget>[
                                 Container(
@@ -272,7 +307,7 @@ class ItemCard extends StatelessWidget {
                                 Text(
                                   product.componyName,
                                   style: const TextStyle(
-                                    fontSize: yDefaultBigFontSize,
+                                    fontSize: yDefaultBigFontSize - 4,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black54,
                                   ),
@@ -291,7 +326,7 @@ class ItemCard extends StatelessWidget {
         ),
       ),
       onTap: () {
-        Get.to(
+        Get.off(
           ProductInfoPage(
             productCode: product.productCode,
             isdetected: true,
@@ -392,42 +427,6 @@ class BackButton extends StatelessWidget {
         onPressed: () {
           Get.back();
         },
-      ),
-    );
-  }
-}
-
-class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const <Widget>[
-          CircularProgressIndicator(),
-          SizedBox(
-            width: 20,
-            height: 20,
-          ),
-          Text(
-            '제품 정보를 가져오는 중 입니다',
-            style: TextStyle(
-              fontSize: yDefaultFontSize,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          Text(
-            '5분 이상 소요될 수 있습니다',
-            style: TextStyle(
-              fontSize: yDefaultFontSize,
-              fontWeight: FontWeight.bold,
-              color: Colors.black54,
-            ),
-          ),
-        ],
       ),
     );
   }

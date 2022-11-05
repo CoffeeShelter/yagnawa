@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'view/product_info_screen.dart';
 import 'view/products_list_screen.dart';
 import 'main_screen.dart';
 

@@ -14,6 +14,7 @@ from werkzeug.utils import secure_filename
 from ServiceProvided import *
 
 import image_process
+import imutils
 
 app = Flask(__name__)
 
@@ -48,11 +49,6 @@ with detection_graph.as_default():
         serialized_graph = fid.read()
         od_graph_def.ParseFromString(serialized_graph)
         tf.import_graph_def(od_graph_def, name='')
-
-nutrient = Nutrient()
-nutrient.connectDatabase()
-nutrient.createCursor()
-
 
 @app.route('/detection/mark', methods=['POST'])
 def detection_mark():
@@ -94,6 +90,8 @@ def getProducts(productName):
     productName = productName.replace('\'', '')
     productName = productName.replace('\n', '')
 
+    nutrient = Nutrient()
+
     result = nutrient.getProductsInfo(productName)
     result = ServiceProvided.convertInformation(result)
 
@@ -122,8 +120,6 @@ def getProduct(productID):
         건강기능식품 제품 세부 정보 Json형태로 반환
     """
     nutrient = Nutrient()
-    nutrient.connectDatabase()
-    nutrient.createCursor()
 
     result = nutrient.getProductInfo(productID)
     result = ServiceProvided.convertInformation(data=result, only=True)
@@ -165,6 +161,8 @@ def getProductByImage():
     errors = {}
     success = False
 
+    nutrient = Nutrient()
+
     for file in files:
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -174,24 +172,38 @@ def getProductByImage():
             image = Image.open(file).convert('RGB')
 
             image_np = load_image_into_numpy_array(image)
+            image_np = cv2.rotate(image_np, cv2.ROTATE_90_CLOCKWISE)
+            image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
 
-            width, height, channel = image_np.shape
+            height, width, channel = image_np.shape
+            print(f'이미지 크기 조절 전 >> width: {width}, height; {height}')
 
             # 가로,세로 1400 이하로 전처리
             if width > 1400:
-                image_np = cv2.resize(
-                    image_np, (height, MAX_SIZE), interpolation=cv2.INTER_AREA)
+                print('가로 조절 중 ...')
+                resized_image = imutils.resize(image_np, width=MAX_SIZE)
+                # image_np = cv2.resize(
+                #     image_np, dsize=(height, MAX_SIZE), interpolation=cv2.INTER_AREA)
+            height, width, channel = resized_image.shape
+            print(f'가로 조절 후 >> width: {width}, height; {height}')
+
             if height > 1400:
-                image_np = cv2.resize(
-                    image_np, (MAX_SIZE, width), interpolation=cv2.INTER_AREA)
+                print('세로 조절 중 ...')
+                resized_image = imutils.resize(resized_image, height=MAX_SIZE)
+                # image_np = cv2.resize(
+                #     image_np, dsize=(MAX_SIZE, width), interpolation=cv2.INTER_AREA)
+            height, width, channel = resized_image.shape
+            print(f'세로 조절 후 >> width: {width}, height; {height}')
+
+            cv2.imwrite('uploads/testImage.jpg', resized_image)
 
             # 입력 이미지 전처리 ( 해상도 변경 ( 1400 x 1400 ))
-            image_np = input_image_to_white_matrix(image_np, 1400, 1400)
+            preprocessedImages = input_image_to_white_matrix(resized_image, 1400, 1400)
 
             # 인증마크 탐지 결과 얻기
             output_dict = run_inference_for_single_image(
-                image_np, detection_graph)
-            result_image = getResultImage(image_np, output_dict)
+                preprocessedImages, detection_graph)
+            result_image = getResultImage(preprocessedImages, output_dict)
             result_image = result_image[0:width, 0:height]
 
             if len(getClassName(output_dict)) > 0:

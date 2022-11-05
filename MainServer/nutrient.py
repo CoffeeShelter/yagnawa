@@ -1,73 +1,56 @@
 import pymysql
 import pandas as pd
 
+class DBHelper:
+    def __init__(self):
+        self.host = "localhost"
+        self.user = "root"
+        self.password = "1234"
+        self.db = "nutrient"
+        self.charset = 'utf-8'
 
-class Nutrient:
-    cursor = None
-    nutrient_db = None
+    def __connect__(self):
+        self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.
+                                   DictCursor)
+        self.cur = self.con.cursor()
 
-    def __init__(self, user='root', password='1234', host='localhost', db='nutrient', charset='utf-8'):
-        # 데이터베이스 연결 설정 값
-        self.user = user
-        self.password = password
-        self.host = host
-        self.db = db
-        self.charset = charset
+    def __disconnect__(self):
+        self.con.close()
 
-        # 데이터베이스와 상호작용을 위한 객체
+    def fetchAll(self, sql):
+        self.__connect__()
+        self.cur.execute(sql)
+        result = self.cur.fetchall()
+        self.__disconnect__()
+        return result
 
-    def connectDatabase(self):
-        if Nutrient.nutrient_db is None:
-            Nutrient.nutrient_db = pymysql.connect(
-                user=self.user,
-                passwd=self.password,
-                host=self.host,
-                db=self.db,
-                # charset=self.charset
-            )
+    def fetchOne(self, sql):
+        self.__connect__()
+        self.cur.execute(sql)
+        result = self.cur.fetchone()
+        self.__disconnect__()
+        return result
 
-    def createCursor(self, cursor=pymysql.cursors.DictCursor):
-        if Nutrient.cursor is None:
-            Nutrient.cursor = Nutrient.nutrient_db.cursor(cursor)
+    def execute(self, sql):
+        self.__connect__()
+        self.cur.execute(sql)
+        self.__disconnect__()
 
-    @staticmethod
-    def getProductsInfo(product_name):
+class Nutrient(DBHelper):
+    def __init__(self):
+        super().__init__()
+
+    def getProductsInfo(self, product_name):
         sql = f"SELECT * FROM sor WHERE PRDLST_NM like '%{product_name}%'"
 
-        if(Nutrient.cursor != None):
-            print(f'[sql]: {sql}')
-            Nutrient.cursor.execute(sql)
-        else:
-            print('cursor를 생성하십시오.')
-            return None
+        return self.fetchAll(sql)
 
-        result = Nutrient.cursor.fetchall()
-        return result
-
-    @staticmethod
-    def getProductInfo(product_id):
+    def getProductInfo(self, product_id):
         sql = f"SELECT * FROM sor WHERE PRDLST_REPORT_NO = '{product_id}'"
 
-        if(Nutrient.cursor != None):
-            print(f'[sql]: {sql}')
-            Nutrient.cursor.execute(sql)
-        else:
-            print('cursor를 생성하십시오.')
-            return None
+        return self.fetchOne(sql)
 
-        result = Nutrient.cursor.fetchone()
-        return result
-
-    @staticmethod
-    def getRecoProducts(content):
+    def getRecoProducts(self, content):
         sql = f"SELECT * FROM SOR WHERE STDR_STND LIKE '%{content}%' LIMIT 5;"
 
-        if(Nutrient.cursor != None):
-            print(f'[sql]: {sql}')
-            Nutrient.cursor.execute(sql)
-        else:
-            print('cursor를 생성하십시오.')
-            return None
-
-        result = Nutrient.cursor.fetchall()
-        return result
+        return self.fetchAll(sql)

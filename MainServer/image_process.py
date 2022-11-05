@@ -9,9 +9,9 @@ pytesseract.pytesseract.tesseract_cmd = R'C:\Program Files\Tesseract-OCR\tessera
 def roi(img, startDx, startDy, endDx, endDy):
     output = img[int(startDy):int(endDy), int(startDx):int(endDx)]
 
-    output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
+    # output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
 
-    cv2.imwrite('uploads/result.jpg', output)
+    cv2.imwrite('uploads/result.png', output)
 
     resultText = pytesseract.image_to_string(output)
     print(f'[OCR 결과]: {resultText}')

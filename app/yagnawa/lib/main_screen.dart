@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'view/image_editor.dart';
 import 'constants.dart';
 import 'package:get/get.dart';
 import 'camera.dart';
-import 'image_edit_test.dart';
+import 'view/image_editor.dart';
 
 enum Menu { gallery, camera }
 

@@ -35,7 +35,8 @@ class ServiceProvided:
                 contents=contents,
             )
             if len(product.containContents) > 0:
-                result = Nutrient.getRecoProducts(product.containContents[0])
+                nutrient = Nutrient()
+                result = nutrient.getRecoProducts(product.containContents[0])
                 result = ServiceProvided.convertInformation(
                     data=result, only=False)
                 product.recommended_products = result
