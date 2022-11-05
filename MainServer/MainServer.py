@@ -178,6 +178,7 @@ def getProductByImage():
             height, width, channel = image_np.shape
             print(f'이미지 크기 조절 전 >> width: {width}, height; {height}')
 
+            resized_image = image_np
             # 가로,세로 1400 이하로 전처리
             if width > 1400:
                 print('가로 조절 중 ...')

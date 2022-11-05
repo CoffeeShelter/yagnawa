@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:yagnawa/appbar.dart';
+import 'package:yagnawa/constants.dart';
 import 'package:yagnawa/main_screen.dart';
 import 'package:yagnawa/products.dart';
 import 'package:flutter/services.dart';
@@ -57,6 +58,9 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
   ui.Image? image;
   bool isLoad = false;
   var uintImage;
+  bool isScale = false;
+  final double minScale = 1.0;
+  final double maxScale = 5.0;
 
   @override
   void initState() {
@@ -100,28 +104,54 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
     }
 
     return Scaffold(
-      body: Center(
+      body: Container(
+        color: yDefaultGrey,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text(
+              '제품명을 드레그하세요',
+              style: TextStyle(
+                color: yDefaultDarkGreen,
+                fontSize: 20,
+                fontFamily: 'Jua',
+              ),
+            ),
             image == null
                 ? const CircularProgressIndicator()
                 : InteractiveViewer(
+                    minScale: minScale,
+                    maxScale: maxScale,
+                    onInteractionStart: (details) {
+                      print('sacle...');
+                      setState(() {
+                        isScale = true;
+                      });
+                    },
+                    onInteractionEnd: (details) {
+                      print('end sacle');
+                      setState(() {
+                        isScale = false;
+                      });
+                    },
                     panEnabled: false,
                     child: Container(
                       width: size.width,
                       height: size.height * 0.5,
                       margin: const EdgeInsets.only(bottom: 30),
                       child: FittedBox(
-                        child: SizedBox(
-                          width: image!.width.toDouble(),
-                          height: image!.height.toDouble(),
-                          child: GestureDetector(
+                        child: GestureDetector(
+                          child: SizedBox(
+                            width: image!.width.toDouble(),
+                            height: image!.height.toDouble(),
                             child: CustomPaint(
                               painter: ImagePainter(image!),
-                              foregroundPainter: const RectPainter(),
+                              foregroundPainter: RectPainter(),
                             ),
-                            // onHorizontalDragDown
-                            onPanDown: (details) {
+                          ),
+
+                          onHorizontalDragDown: (details) {
+                            if (isScale == false) {
                               print('드레그 시작!');
                               setState(
                                 () {
@@ -138,27 +168,30 @@ class _ImagePaintPageState extends State<ImagePaintPage> {
                                   endDy = details.localPosition.dy;
                                 },
                               );
-                            },
-                            // onHorizontalDragEnd
-                            onPanEnd: (details) {
+                            }
+                          },
+                          //
+                          onHorizontalDragEnd: (details) {
+                            if (isScale == false) {
                               print('드레그 끝!');
                               setState(
                                 () {
                                   isClick = false;
                                 },
                               );
-                            },
-                            // onHorizontalDragUpdate
-                            onPanUpdate: (details) {
+                            }
+                          },
+                          //
+                          onHorizontalDragUpdate: (details) {
+                            if (isClick && isScale == false) {
                               print('드레그 중. . .');
-                              if (isClick) {
-                                setState(() {
-                                  endDx = details.localPosition.dx;
-                                  endDy = details.localPosition.dy;
-                                });
-                              }
-                            },
-                          ),
+                              setState(() {
+                                endDx = details.localPosition.dx;
+                                endDy = details.localPosition.dy;
+                              });
+                              print(endDx);
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -258,8 +291,8 @@ class RectPainter extends CustomPainter {
     var rect = Rect.fromPoints(Offset(startDx, startDy), Offset(endDx, endDy));
 
     var border = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 5.0
+      ..color = Colors.red
+      ..strokeWidth = 6.0
       ..style = PaintingStyle.stroke;
 
     // print('width: ${size.width} , height: ${size.height}');
