@@ -8,13 +8,13 @@ class CertifiedMark extends StatelessWidget {
 
   final String mark;
 
-  final markList = [
-    'korCertifiMark (국내 건강기능식품)',
-    'gmp (국내 GMP)',
-    'usda (미국 유기농)',
-    'usp (미국 USP)',
-    'aco (호주 유기농)',
-  ];
+  final Map marks = {
+    'korCertifiMark (국내 건강기능식품)': 'assets/images/kor_functional.png',
+    'gmp (국내 GMP)': 'assets/images/gmp.png',
+    'usda (미국 유기농)': 'assets/images/usda.png',
+    'usp (미국 USP)': 'assets/images/usp.jpg',
+    'aco (호주 유기농)': 'assets/images/aco.png',
+  };
 
   final markImagePathes = [
     'assets/images/kor_functional.png',
@@ -23,8 +23,7 @@ class CertifiedMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int index = markList.indexOf(mark);
-    String markImagePath = markImagePathes[index];
+    String markImagePath = marks[mark];
 
     return Container(
       width: 64,
