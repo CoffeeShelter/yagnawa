@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yagnawa/constants.dart';
+import 'package:get/get.dart';
+import 'package:yagnawa/main.dart';
+import 'package:yagnawa/main_screen.dart';
 
 AppBar yacnawaAppBar() {
   return AppBar(
@@ -10,14 +13,19 @@ AppBar yacnawaAppBar() {
         Get.back();
       },
     ),
-    title: const Text(
-      '약나와',
-      style: TextStyle(
-        color: yDefaultDarkGreen,
-        fontSize: 30,
-        fontFamily: 'Jua',
-        letterSpacing: 2.0,
+    title: GestureDetector(
+      child: const Text(
+        '약나와',
+        style: TextStyle(
+          color: yDefaultDarkGreen,
+          fontSize: 30,
+          fontFamily: 'Jua',
+          letterSpacing: 2.0,
+        ),
       ),
+      onTap: () {
+        Get.to(MainScreen());
+      },
     ),
     centerTitle: true,
     actions: const [

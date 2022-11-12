@@ -1,5 +1,5 @@
 from Crawler import Crawler
-
+import os
 
 class Product():
     SAMPLE = ['e291a0', 'e291a1', 'e291a2', 'e291a3', 'e291a4',
@@ -33,8 +33,8 @@ class Product():
         self.contents, self.extra, self.containContents = self.formattingContents(
             str(contents))
         # self.contents = str(contents)
-        # TODO 주석 풀기 ( 이미지 크롤링 )
-        # self.image = Crawler.getNetImage(self.productName)
+        if (os.path.isfile(f"./products_image/{self.productCode}.jpg")):
+            self.image = f"http://211.59.155.207:8000/products_image/{self.productCode}.jpg"
 
     def formattingFunctionally(self, functionally, debug=False):
         temp = []

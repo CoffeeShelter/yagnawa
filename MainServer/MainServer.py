@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-from nutrient import Nutrient
+from Nutrient import Nutrient
 from Certified_Mark_Detection_Program import *
 import base64
 import os
@@ -172,7 +172,7 @@ def getProductByImage():
             image = Image.open(file).convert('RGB')
 
             image_np = load_image_into_numpy_array(image)
-            image_np = cv2.rotate(image_np, cv2.ROTATE_90_CLOCKWISE)
+            # image_np = cv2.rotate(image_np, cv2.ROTATE_90_CLOCKWISE)
             image_np = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
 
             height, width, channel = image_np.shape

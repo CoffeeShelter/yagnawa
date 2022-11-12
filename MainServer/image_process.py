@@ -7,8 +7,8 @@ pytesseract.pytesseract.tesseract_cmd = R'C:\Program Files\Tesseract-OCR\tessera
 
 
 def roi(img, startDx, startDy, endDx, endDy):
-    output = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
-    output = output[int(startDy):int(endDy), int(startDx):int(endDx)]
+    # output = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    output = img[int(startDy):int(endDy), int(startDx):int(endDx)]
 
     # output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
 

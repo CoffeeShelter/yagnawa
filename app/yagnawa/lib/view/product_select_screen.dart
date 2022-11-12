@@ -23,6 +23,7 @@ class ProductSelectPage extends StatelessWidget {
     productName ??= '';
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'YagNaWa',
       home: Scaffold(
         body: ProductSelectScreen(
@@ -242,6 +243,13 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    dynamic imageWidget = const AssetImage(
+      "assets/images/No-Image-Found.png",
+    );
+    if (product.image != '') {
+      imageWidget = NetworkImage(product.image);
+    }
+
     return GestureDetector(
       child: Container(
         margin: const EdgeInsets.only(
@@ -268,12 +276,10 @@ class ItemCard extends StatelessWidget {
                 children: <Widget>[
                   Container(
                     width: size.width * 0.2,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: AssetImage(
-                          "assets/images/No-Image-Found.png",
-                        ),
+                        image: imageWidget,
                       ),
                     ),
                   ),

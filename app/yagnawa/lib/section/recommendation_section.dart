@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../constants.dart';
 import '../products.dart';
+import '../view/product_info_screen.dart';
 
 class RecommendationSection extends StatelessWidget {
   const RecommendationSection({
@@ -20,6 +22,7 @@ class RecommendationSection extends StatelessWidget {
       }
 
       var widget = RecommendationProduct(
+        productCode: product.productCode,
         componyName: product.productName,
         productName: product.componyName,
         productImage: product.image != ''
@@ -103,63 +106,75 @@ const <Widget>[
 class RecommendationProduct extends StatelessWidget {
   const RecommendationProduct({
     Key? key,
+    required this.productCode,
     required this.productName,
     required this.componyName,
     required this.productImage,
   }) : super(key: key);
 
+  final String productCode;
   final String productName;
   final String componyName;
   final dynamic productImage;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      height: 200,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.black,
-          style: BorderStyle.solid,
-          width: 2.0,
+    return GestureDetector(
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.black,
+            style: BorderStyle.solid,
+            width: 2.0,
+          ),
         ),
-      ),
-      alignment: Alignment.center,
-      padding: const EdgeInsets.all(10.0),
-      margin: const EdgeInsets.all(7.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: productImage,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(10.0),
+        margin: const EdgeInsets.all(7.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: productImage,
+                  ),
                 ),
               ),
             ),
-          ),
-          Text(
-            productName,
-            style: const TextStyle(
-              fontSize: yDefaultFontSize,
-              fontWeight: FontWeight.bold,
-              color: Colors.black54,
+            Text(
+              productName,
+              style: const TextStyle(
+                fontSize: yDefaultFontSize,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+              ),
             ),
-          ),
-          Text(
-            componyName,
-            style: const TextStyle(
-              fontSize: yDefaultFontSize,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+            Text(
+              componyName,
+              style: const TextStyle(
+                fontSize: yDefaultFontSize,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+      onTap: () {
+        Get.to(
+            ProductInfoPage(
+              productCode: productCode,
+              isdetected: false,
+            ),
+            preventDuplicates: false);
+      },
     );
   }
 }

@@ -17,6 +17,7 @@ Future<Product> getProduct({productCode}) async {
       "Accept": "*/*",
       "Origin": "http://localhost",
       "Connection": "Keep-Alive",
+      "Keep-Alive": "timeout=5, max=1000",
     },
   );
 

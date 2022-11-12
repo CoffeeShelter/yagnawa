@@ -17,6 +17,7 @@ class ProductListPage extends StatelessWidget {
     productName ??= '';
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'YagNaWa',
       home: Scaffold(
         body: ProductListScreen(
@@ -150,7 +151,7 @@ class ProductListScreen extends StatelessWidget {
 }
 
 class ItemCard extends StatelessWidget {
-  const ItemCard({
+  ItemCard({
     Key? key,
     required this.size,
     required this.colors,
@@ -162,6 +163,11 @@ class ItemCard extends StatelessWidget {
   final List<Color> colors;
   final int index;
   final Product product;
+
+  final Map<String, String> headers = {
+    "Connection": "Keep-Alive",
+    "Keep-Alive": "timeout=5, max=1000",
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -180,14 +186,17 @@ class ItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage(product.image),
+          image: NetworkImage(
+            product.image,
+            headers: headers,
+          ),
         ),
       ),
     );
 
-    var image = product.image != ''
-        ? NetworkImage(product.image)
-        : const AssetImage("assets/images/No-Image-Found.png");
+    // var image = product.image != ''
+    //     ? NetworkImage(product.image)
+    //     : const AssetImage("assets/images/No-Image-Found.png");
 
     return GestureDetector(
       child: Container(
@@ -230,24 +239,27 @@ class ItemCard extends StatelessWidget {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              margin: const EdgeInsets.only(
-                                right: 5.0,
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  right: 5.0,
+                                ),
+                                child: const Icon(Icons.business),
                               ),
-                              child: const Icon(Icons.business),
-                            ),
-                            Text(
-                              product.componyName,
-                              style: const TextStyle(
-                                fontSize: yDefaultBigFontSize - 4,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54,
+                              Text(
+                                product.componyName,
+                                style: const TextStyle(
+                                  fontSize: yDefaultBigFontSize - 4,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -313,13 +325,13 @@ class TopArea extends StatelessWidget {
           ),
           SizedBox(
             width: size.width * 0.3,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                IconButton(icon: const Icon(Icons.camera), onPressed: () {}),
-                IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-              ],
-            ),
+            // child: Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: <Widget>[
+            //     IconButton(icon: const Icon(Icons.camera), onPressed: () {}),
+            //     IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+            //   ],
+            // ),
           )
         ],
       ),

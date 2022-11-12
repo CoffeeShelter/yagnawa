@@ -40,12 +40,21 @@ class ImageSection extends StatelessWidget {
         ),
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage(product.image),
+          image: NetworkImage(
+            product.image,
+            headers: {
+              "Accept": "*/*",
+              "Origin": "http://localhost",
+              "Connection": "Keep-Alive",
+              "Keep-Alive": "timeout=60, max=1000"
+            },
+          ),
         ),
       ),
     );
 
     if (product.image != '') {
+      print(product.image);
       return netImage;
     }
 

@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 
-from nutrient import *
+from Nutrient import *
 from Product import Product
 
 
