@@ -29,6 +29,14 @@ class CertifiedMark extends StatelessWidget {
     'aco (호주 유기농)': '유기농 원료 비중이 95% 이상인 제품에 표시',
   };
 
+  final Map markNames = {
+    'korCertifiMark (국내 건강기능식품)': '건강기능식품 (한국)',
+    'gmp (국내 GMP)': 'GMP (한국)',
+    'usda (미국 유기농)': 'USDA (미국)',
+    'usp (미국 USP)': 'USP (미국)',
+    'aco (호주 유기농)': 'ACO (호주)',
+  };
+
   final markImagePathes = [
     'assets/images/kor_functional.png',
     'assets/images/gmp.png',
@@ -57,7 +65,7 @@ class CertifiedMark extends StatelessWidget {
           builder: (context) {
             return AlertDialog(
               title: Text(
-                mark,
+                markNames[mark],
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: yDefaultBigFontSize,
