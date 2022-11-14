@@ -139,6 +139,9 @@ class Product {
   List<dynamic> marks; // 인증마크
   String image; // 이미지 주소
   ProductList recommendedProducts; // 추천된 제품들
+  List<dynamic> values;
+  List<dynamic> totals;
+  List<dynamic> containContents;
 
   Product({
     required this.productCode,
@@ -150,19 +153,24 @@ class Product {
     required this.marks,
     required this.image,
     required this.recommendedProducts,
+    required this.values,
+    required this.totals,
+    required this.containContents,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      productCode: json['productCode'] ??= 'null',
-      productName: json['productName'] ??= 'null',
-      componyName: json['componyName'] ??= 'null',
-      functionality: json['functionally'] ??= [],
-      contents: json['contents'] ??= [],
-      extra: json['extra'] ??= [],
-      marks: json['mark'] ??= [],
-      image: json['image'] ??= '',
-      recommendedProducts: ProductList.fromJson(json['recommended_products']),
-    );
+        productCode: json['productCode'] ??= 'null',
+        productName: json['productName'] ??= 'null',
+        componyName: json['componyName'] ??= 'null',
+        functionality: json['functionally'] ??= [],
+        contents: json['contents'] ??= [],
+        extra: json['extra'] ??= [],
+        marks: json['mark'] ??= [],
+        image: json['image'] ??= '',
+        recommendedProducts: ProductList.fromJson(json['recommended_products']),
+        values: json['values'] ??= [],
+        totals: json['totals'] ??= [],
+        containContents: json['containContents'] ??= []);
   }
 }

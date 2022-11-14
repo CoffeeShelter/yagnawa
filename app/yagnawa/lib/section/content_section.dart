@@ -19,8 +19,9 @@ class _ContentSectionState extends State<ContentSection> {
 
   List<Widget> getContents() {
     List<Widget> contentList = [];
+    int index = 0;
 
-    for (String content in widget.product.contents) {
+    for (String content in widget.product.containContents) {
       var obj = Container(
         margin: const EdgeInsets.only(
           top: 10.0,
@@ -33,17 +34,39 @@ class _ContentSectionState extends State<ContentSection> {
             bottom: BorderSide(color: yDefaultDarkGreen, width: 2.0),
           ),
         ),
-        child: Text(
-          content,
-          style: const TextStyle(
-            fontSize: 15.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              content,
+              style: const TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            Text(
+              widget.product.values[index],
+              style: const TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ],
         ),
+        // child: Text(
+        //   '$content : ${widget.product.values[index]}',
+        //   style: const TextStyle(
+        //     fontSize: 15.0,
+        //     fontWeight: FontWeight.bold,
+        //     color: Colors.black,
+        //   ),
+        // ),
       );
 
       contentList.add(obj);
+      index += 1;
     }
 
     return contentList;

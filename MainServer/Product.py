@@ -1,5 +1,5 @@
-from Crawler import Crawler
 import os
+import re
 
 class Product():
     SAMPLE = ['e291a0', 'e291a1', 'e291a2', 'e291a3', 'e291a4',
@@ -12,6 +12,7 @@ class Product():
         '루테인', '비타민C', 'EPA', '모나콜린', '프로바이오틱스',
         '락추로스', '셀렌', 'DHA', '비타민', '지방족',
     ]
+    RE = '[0-9]+[.,0-9]*[a-zA-Z\sα-]*\/[\s]*[0-9]+[.,0-9]*[a-zA-Z\s]*'
 
     def __init__(self):
         self.productCode = ''
@@ -25,12 +26,15 @@ class Product():
         self.image = ''
         self.recommended_products = []  # 추천 제품
 
+        self.values = []    # 함량 수치
+        self.totals = []    # 최대 함량 수치
+
     def setProduct(self, productCode, productName, componyName, functionally, contents):
         self.productCode = str(productCode[0])
         self.productName = str(productName[0])
         self.componyName = str(componyName[0])
         self.functionally = self.formattingFunctionally(str(functionally[0]))
-        self.contents, self.extra, self.containContents = self.formattingContents(
+        self.contents, self.extra, self.containContents, self.values, self.totals = self.formattingContents(
             str(contents))
         # self.contents = str(contents)
         if (os.path.isfile(f"./products_image/{self.productCode}.jpg")):
@@ -74,9 +78,13 @@ class Product():
         temp = []
         extra = []
         containContents = []
+        values = []
+        totals = []
         result = []
 
         check = False
+
+        p = re.compile(Product.RE)
 
         if '\n' in contents:
             temp = contents.split('\n')
@@ -87,15 +95,33 @@ class Product():
 
             for x in Product.MAIN_CONTENT:
                 if x in content:
-                    result.append(content)
-                    containContents.append(x)
-                    check = True
+                
+                    regexResultList = p.findall(content)
+                    if len(regexResultList) > 0:
+                        regexResultString = regexResultList[0]
+                        regexResultString.replace(' ', '')
+
+                        splitData = regexResultString.split('/')
+                        if len(splitData) == 2:
+                            value = splitData[0]
+                            total = splitData[1]
+
+                            values.append(value)
+                            totals.append(total)
+
+                            print(f'{x}의 함량: {value} , 총: {total}')
+                            result.append(content)
+                            containContents.append(x)
+                            check = True
+
                     break
 
             if check == False:
                 extra.append(content)
 
-        return result, extra, containContents
+        
+
+        return result, extra, containContents, values, totals
 
 
 """
